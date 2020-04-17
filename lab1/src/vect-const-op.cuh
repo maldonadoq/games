@@ -33,7 +33,7 @@ void kernelMinus(float* a_device, int constant, float *r_device, int size_vector
 
 
 
-// Operation
+// Operation [vector *+- constante]
 void operation(float *a_host, int constant, float *r_host, int size_vector, int threads, char op){
 	int size_device = size_vector*sizeof(float);
 	float *a_device, *r_device;
