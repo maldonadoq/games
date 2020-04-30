@@ -3,31 +3,31 @@
 
 // Kernel of Multiplication
 __global__
-void kernelMult(float* a_device, int constant, float *r_device, int size_vector){
+void kernelMult(float* a_device, int constant, int size_vector){
 	int index = blockIdx.x * blockDim.x + threadIdx.x;
 
 	if(index < size_vector){
-		r_device[index] = a_device[index] * constant;
+		a_device[index] = a_device[index] * constant;
 	}
 }
 
 // Kernel of Addition
 __global__
-void kernelPlus(float* a_device, int constant, float *r_device, int size_vector){
+void kernelPlus(float* a_device, int constant, int size_vector){
 	int index = blockIdx.x * blockDim.x + threadIdx.x;
 
 	if(index < size_vector){
-		r_device[index] = a_device[index] + constant;
+		a_device[index] = a_device[index] + constant;
 	}
 }
 
 // Kernel of Substraction
 __global__
-void kernelMinus(float* a_device, int constant, float *r_device, int size_vector){
+void kernelMinus(float* a_device, int constant, int size_vector){
 	int index = blockIdx.x * blockDim.x + threadIdx.x;
 
 	if(index < size_vector){
-		r_device[index] = a_device[index] - constant;
+		a_device[index] = a_device[index] - constant;
 	}
 }
 
@@ -36,24 +36,22 @@ void kernelMinus(float* a_device, int constant, float *r_device, int size_vector
 // Operation [vector *+- constante]
 void operation(float *a_host, int constant, float *r_host, int size_vector, int threads, char op){
 	int size_device = size_vector*sizeof(float);
-	float *a_device, *r_device;
+	float *a_device;
 
 	int blocks = ceil(size_vector/float(threads));
 
 	cudaMalloc((void **)&a_device, size_device);
-	cudaMalloc((void **)&r_device, size_device);
-
 	cudaMemcpy(a_device, a_host, size_device, cudaMemcpyHostToDevice);
 	
 	switch(op){
 		case '*':
-			kernelMult<<<blocks, threads>>>(a_device, constant, r_device, size_vector);
+			kernelMult<<<blocks, threads>>>(a_device, constant, size_vector);
 			break;
 		case '+':
-			kernelPlus<<<blocks, threads>>>(a_device, constant, r_device, size_vector);
+			kernelPlus<<<blocks, threads>>>(a_device, constant, size_vector);
 			break;
 		case '-':
-			kernelMinus<<<blocks, threads>>>(a_device, constant, r_device, size_vector);
+			kernelMinus<<<blocks, threads>>>(a_device, constant, size_vector);
 			break;
 		default:
 			break;
@@ -61,10 +59,9 @@ void operation(float *a_host, int constant, float *r_host, int size_vector, int 
 
 	cudaDeviceSynchronize();
 
-	cudaMemcpy(r_host, r_device, size_device, cudaMemcpyDeviceToHost);
+	cudaMemcpy(r_host, a_device, size_device, cudaMemcpyDeviceToHost);
 	
 	cudaFree(a_device);
-	cudaFree(r_device);
 }
 
 #endif

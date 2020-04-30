@@ -22,7 +22,7 @@ int main(int argc, char const *argv[]){
 	}
 
 	
-	operation(a_host, constant, r_host, size_vector, threads, '*');
+	operation(a_host, constant, r_host, size_vector, threads, '+');
 	print_vector(r_host, size_vector);
 
 	delete[] a_host;
