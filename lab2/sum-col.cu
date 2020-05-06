@@ -7,8 +7,8 @@ using std::endl;
 
 
 int main(int argc, char const *argv[]){
-	int M = 9;
-	int N = 64;	
+	int M = 32;
+	int N = 64;
 	int block = 32;
 
     int* Mh = new int[M * N];
@@ -20,10 +20,10 @@ int main(int argc, char const *argv[]){
 		}
 	}
 	
-	print_matrix(Mh, N, M);
-	cout << endl;
+	// print_matrix(Mh, N, M);
+	// cout << endl;
 
-	sumCol(M, N, Mh, Rh, block);
+	sumCol(M, N, Mh, Rh, block, 's');
 	print_vector(Rh, N);
 
 	delete[] Mh;
