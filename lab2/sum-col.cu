@@ -7,7 +7,7 @@ using std::endl;
 
 
 int main(int argc, char const *argv[]){
-	int M = 32;
+	int M = 96;
 	int N = 64;
 	int block = 32;
 

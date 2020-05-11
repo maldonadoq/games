@@ -3,6 +3,11 @@
 
 #define TILE 32
 
+#include <iostream>
+
+using std::cout;
+using std::endl;
+
 __global__
 void sumColKernel(int M, int N, int* Md, int* Rd){
 
@@ -21,31 +26,25 @@ void sumColKernel(int M, int N, int* Md, int* Rd){
 }
 
 __global__
-void sumColSharedKernel(int M, int N, int *Md, int *Rd){
-	__shared__ int Mds[TILE][TILE];
+void sumColSharedKernel(int* Md, int* Nd, int M){
+	__shared__ int Nds[TILE];
 
-	unsigned tx = threadIdx.x;
-	unsigned ty = threadIdx.y;
+	int tmp = 0;
+	int steps = M/blockDim.x;
+	int init = blockIdx.x * M + threadIdx.x * steps;
+	
+	for(int k=0; k<steps; k++) {
+		tmp = tmp + Md[init + k];
+	}
 
-	unsigned col = (blockIdx.x * blockDim.x) + tx;
+	Nds[threadIdx.x] = tmp;
+	__syncthreads();
 
-	if(col < N){
-		int tmp = 0;
-		int row;
-
-		for(int i=0; i<M/TILE; i++){
-			row = (i * TILE) + ty;
-			
-			Mds[ty][tx] = Md[(row * N) + col];
-			__syncthreads();
-
-			for(int j=0; j<TILE; j++){
-				tmp += Mds[ty][j];
-			}
-			__syncthreads();
+	if (threadIdx.x == 0){
+		for (int i = 1; i < blockDim.x; ++i) {
+			Nds[0] = Nds[0]+Nds[i];
 		}
-
-		Rd[col] = tmp;
+		Nd[blockIdx.x] = Nds[0];
 	}
 }
 
@@ -61,17 +60,20 @@ void sumCol(int M, int N, int *Mh, int *Rh, int block, char t){
 
 	cudaMemcpy(Md, Mh, size1, cudaMemcpyHostToDevice);
 	cudaMemset(Rd, 0, size2);
-	
-	dim3 dimBlock(block, block);
-	dim3 dimGrid(ceil((float)N / (float)block), ceil((float)M / (float)block));
-	
+		
 	switch(t){
-		case 'g': 
+		case 'g': {
+			dim3 dimBlock(block, block);
+			dim3 dimGrid(ceil((float)N / (float)block), ceil((float)M / (float)block));
 			sumColKernel<<<dimGrid, dimBlock>>>(M, N, Md, Rd);
 			break;
-		case 's':
-			sumColSharedKernel<<<dimGrid, dimBlock>>>(M, N, Md, Rd);
+		}
+		case 's':{
+			dim3 dimGrid(N, 1);
+			dim3 dimBlock(M/block, 1);
+			sumColSharedKernel<<<dimGrid, dimBlock>>>(Md, Rd, M);
 			break;
+		}
 		default:
 			std::cout << "Type [s-g]!!!";
 			break;
