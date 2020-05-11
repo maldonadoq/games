@@ -7,7 +7,7 @@ using std::endl;
 
 
 int main(int argc, char const *argv[]){
-	int M = 96;
+	int M = 32;
 	int N = 64;
 	int block = 32;
 
@@ -16,7 +16,7 @@ int main(int argc, char const *argv[]){
 
 	for(int i=0; i<M; i++){
 		for(int j=0; j<N; j++){
-			Mh[(i * N) + j] = 1;
+			Mh[(i * N) + j] = j;
 		}
 	}
 	

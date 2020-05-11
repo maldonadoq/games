@@ -26,25 +26,21 @@ void sumColKernel(int M, int N, int* Md, int* Rd){
 }
 
 __global__
-void sumColSharedKernel(int* Md, int* Nd, int M){
+void sumColSharedKernel(int M, int N, int* Md, int* Nd){
 	__shared__ int Nds[TILE];
 
-	int tmp = 0;
-	int steps = M/blockDim.x;
-	int init = blockIdx.x * M + threadIdx.x * steps;
-	
-	for(int k=0; k<steps; k++) {
-		tmp = tmp + Md[init + k];
-	}
+	int row = (blockIdx.y * blockDim.y) + threadIdx.y;
+	int col = (blockIdx.x * blockDim.x) + threadIdx.x;
 
-	Nds[threadIdx.x] = tmp;
+	Nds[threadIdx.y] = Md[(row*N) + col];
 	__syncthreads();
 
-	if (threadIdx.x == 0){
-		for (int i = 1; i < blockDim.x; ++i) {
+	if (threadIdx.y == 0){
+		for (int i = 1; i < blockDim.y; ++i) {
 			Nds[0] = Nds[0]+Nds[i];
 		}
-		Nd[blockIdx.x] = Nds[0];
+		
+		Nd[blockIdx.x] += Nds[0];
 	}
 }
 
@@ -69,9 +65,9 @@ void sumCol(int M, int N, int *Mh, int *Rh, int block, char t){
 			break;
 		}
 		case 's':{
-			dim3 dimGrid(N, 1);
-			dim3 dimBlock(M/block, 1);
-			sumColSharedKernel<<<dimGrid, dimBlock>>>(Md, Rd, M);
+			dim3 dimGrid(N, M/block);
+			dim3 dimBlock(1, block);
+			sumColSharedKernel<<<dimGrid, dimBlock>>>(M, N, Md, Rd);
 			break;
 		}
 		default:
