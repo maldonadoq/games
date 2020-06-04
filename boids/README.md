@@ -1,5 +1,5 @@
-# Steering Behaviors
-Boids
+# Boids
+Steering Behaviors
 
 ## Students
 - Percy Maldonado Quispe
