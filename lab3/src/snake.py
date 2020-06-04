@@ -158,6 +158,6 @@ def play_game(snake_start, snake_pos, apple_pos, button_direction, score, displa
 
 	snake_pos, apple_pos, score = generate_snake(snake_start, snake_pos, apple_pos, button_direction, score)
 	pg.display.update()
-	time.sleep(0.05)
+	time.sleep(0.025)
 
 	return snake_pos, apple_pos, score
