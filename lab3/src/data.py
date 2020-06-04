@@ -1,4 +1,5 @@
-from snake import *
+from .snake import *
+from tqdm import tqdm
 
 class SnakeData:
 	def __init__(self):		
@@ -6,7 +7,7 @@ class SnakeData:
 		self.train_y = []
 
 	def generate(self, games, steps):
-		for _ in range(games):
+		for _ in tqdm(range(games)):
 			snake_start, snake_pos, apple_pos, score = starting_position()
 			apple_dist = apple_dist_from_snake(apple_pos, snake_pos)
 
@@ -23,8 +24,8 @@ class SnakeData:
 				if(front_block == 1 and left_block == 1 and right_block == 1):
 					break
 			
-				self.train_x.append([left_block, front_block, right_block, apple_dir_vect_norm[0]],
-									snake_dir_vect_norm[0], apple_dir_vect_norm[1], snake_dir_vect_norm[1])
+				self.train_x.append([left_block, front_block, right_block, apple_dir_vect_norm[0],
+									snake_dir_vect_norm[0], apple_dir_vect_norm[1], snake_dir_vect_norm[1]])
 
 				snake_pos, apple_pos, score = play(snake_start, snake_pos, apple_pos,
 															button_direction, score)
@@ -75,8 +76,4 @@ class SnakeData:
 				self.train_y.append([0,0,1])
 
 		return direction, button_direction
-
-if __name__ == "__main__":
-	data = SnakeData()
-
-	data.generate(10, 20)
+		
