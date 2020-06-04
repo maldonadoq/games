@@ -1,6 +1,8 @@
 import numpy as np
+import pygame as pg
 import random
 import math
+import time
 
 dimention = 500
 
@@ -139,4 +141,23 @@ def generate_snake(snake_start, snake_pos, apple_pos, button_direction, score):
 
 def play(snake_start, snake_pos, apple_pos, button_direction, score):	
 	snake_pos, apple_pos, score = generate_snake(snake_start, snake_pos, apple_pos, button_direction, score)
+	return snake_pos, apple_pos, score
+
+def display_snake(snake_pos, display):
+	for pos in snake_pos:
+		pg.draw.rect(display, (255, 0, 0), pg.Rect(pos[0], pos[1], 10, 10))
+
+def display_apple(apple_pos, display):
+	pg.draw.rect(display, (0, 255, 0), pg.Rect(apple_pos[0], apple_pos[1], 10, 10))
+
+def play_game(snake_start, snake_pos, apple_pos, button_direction, score, display):
+	display.fill((255, 255, 255))
+
+	display_apple(apple_pos, display)
+	display_snake(snake_pos, display)
+
+	snake_pos, apple_pos, score = generate_snake(snake_start, snake_pos, apple_pos, button_direction, score)
+	pg.display.update()
+	time.sleep(0.05)
+
 	return snake_pos, apple_pos, score
