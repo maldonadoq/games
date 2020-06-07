@@ -84,9 +84,9 @@ class SnakeData:
 			tmp = ''
 			for i, v in enumerate(x):
 				if(i == len(x)-1):
-					tmp += str(v) + '\n'
+					tmp += str(round(v, 4)) + '\n'
 				else:
-					tmp += str(v) + ' '
+					tmp += str(round(v, 4)) + ' '
 			trainXFile.write(tmp)
 
 		trainYFile = open('data/trainY.csv', 'w')
