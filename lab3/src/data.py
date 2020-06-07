@@ -86,7 +86,7 @@ class SnakeData:
 				if(i == len(x)-1):
 					tmp += str(v) + '\n'
 				else:
-					tmp += str(v) + ','
+					tmp += str(v) + ' '
 			trainXFile.write(tmp)
 
 		trainYFile = open('data/trainY.csv', 'w')
@@ -97,5 +97,5 @@ class SnakeData:
 				if(i == len(y)-1):
 					tmp += str(v) + '\n'
 				else:
-					tmp += str(v) + ','
+					tmp += str(v) + ' '
 			trainYFile.write(tmp)
