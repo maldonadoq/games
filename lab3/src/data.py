@@ -77,3 +77,25 @@ class SnakeData:
 
 		return direction, button_direction
 		
+	def save(self):
+		trainXFile = open('data/trainX.csv', 'w')
+		trainXFile.write('Left,Front,Right,ADirX,ADirY,SDirX,SDirY\n')
+		for x in self.train_x:
+			tmp = ''
+			for i, v in enumerate(x):
+				if(i == len(x)-1):
+					tmp += str(v) + '\n'
+				else:
+					tmp += str(v) + ','
+			trainXFile.write(tmp)
+
+		trainYFile = open('data/trainY.csv', 'w')
+		trainYFile.write('Left,Same,Right\n')
+		for y in self.train_y:
+			tmp = ''
+			for i, v in enumerate(y):
+				if(i == len(y)-1):
+					tmp += str(v) + '\n'
+				else:
+					tmp += str(v) + ','
+			trainYFile.write(tmp)
