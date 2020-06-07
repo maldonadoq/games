@@ -9,7 +9,7 @@ with warnings.catch_warnings():
 
 if __name__ == "__main__":
 	data = SnakeData()
-	data.generate(1000, 1000)
+	data.generate(100, 1000)
 	data.save()
 
 	model = Sequential()
