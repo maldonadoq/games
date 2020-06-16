@@ -65,9 +65,9 @@ int main(int argc, char *argv[]){
 
 	SnakeDataset snake(num_batches_train, batch_size, "data/trainX.csv", "data/trainY.csv");
 	
-	for (int epoch = 0; epoch < epochs; epoch++){
+	for (epoch = 0; epoch < epochs; epoch++){
 		loss = 0.0;
-		for (int batch = 0; batch < num_batches_train; batch++){
+		for (batch = 0; batch < num_batches_train; batch++){
 			Y = nn.forward(snake.getBatches().at(batch));
 			nn.backprop(Y, snake.getTargets().at(batch));
 			loss += cce_cost.cost(Y, snake.getTargets().at(batch));
@@ -79,7 +79,7 @@ int main(int argc, char *argv[]){
 	int correct_predictions = 0;
 	SnakeDataset snake_test(num_batches_test, batch_size, "data/testX.csv", "data/testY.csv");
 
-	for (int batch = 0; batch < num_batches_test; batch++){
+	for (batch = 0; batch < num_batches_test; batch++){
 		Y = nn.forward(snake_test.getBatches().at(batch));
 		Y.copyDeviceToHost();
 		correct_predictions += computeAccuracy(Y, snake_test.getTargets().at(batch), output_size);
