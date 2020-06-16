@@ -1,3 +1,6 @@
+# Data
+*.csv
+
 # Visual Code
 .vscode/*
 .vscode
