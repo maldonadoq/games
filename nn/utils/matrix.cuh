@@ -1,7 +1,8 @@
 #pragma once
 
 #include "shape.cuh"
-
+#include "exception.cuh"
+#include <vector>
 #include <memory>
 
 class Matrix {
@@ -20,6 +21,7 @@ public:
 
 	Matrix(size_t x_dim = 1, size_t y_dim = 1);
 	Matrix(Shape shape);
+	Matrix(Shape shape, std::vector<float>);
 
 	void allocateMemory();
 	void allocateMemoryIfNotAllocated(Shape shape);

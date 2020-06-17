@@ -9,11 +9,9 @@ private:
 
 public:
 	NNException(const char* exception_message) :
-		exception_message(exception_message)
-	{ }
+		exception_message(exception_message){ }
 
-	virtual const char* what() const throw()
-	{
+	virtual const char* what() const throw(){
 		return exception_message;
 	}
 
