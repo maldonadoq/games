@@ -12,8 +12,7 @@
 // than the naive kernel below.  Note that the shared memory array is sized to
 // (BLOCK_DIM+1)*BLOCK_DIM.  This pads each row of the 2D block in shared memory
 // so that bank conflicts do not occur when threads address the array column-wise.
-__global__ void transpose_relu(float *odata, float *idata, int width, int height)
-{
+__global__ void transpose_relu(float *odata, float *idata, int width, int height) {
 	__shared__ float block[BLOCK_DIM][BLOCK_DIM + 1];
 
 	// read the matrix tile into shared memory
@@ -21,8 +20,7 @@ __global__ void transpose_relu(float *odata, float *idata, int width, int height
 	// in transpose_relud order in block[][]
 	unsigned int xIndex = blockIdx.x * BLOCK_DIM + threadIdx.x;
 	unsigned int yIndex = blockIdx.y * BLOCK_DIM + threadIdx.y;
-	if ((xIndex < width) && (yIndex < height))
-	{
+	if ((xIndex < width) && (yIndex < height)) {
 		unsigned int index_in = yIndex * width + xIndex;
 		block[threadIdx.y][threadIdx.x] = idata[index_in];
 	}
@@ -33,8 +31,7 @@ __global__ void transpose_relu(float *odata, float *idata, int width, int height
 	// write the transpose_relud matrix tile to global memory (odata) in linear order
 	xIndex = blockIdx.y * BLOCK_DIM + threadIdx.x;
 	yIndex = blockIdx.x * BLOCK_DIM + threadIdx.y;
-	if ((xIndex < height) && (yIndex < width))
-	{
+	if ((xIndex < height) && (yIndex < width)) {
 		unsigned int index_out = yIndex * height + xIndex;
 		odata[index_out] = block[threadIdx.x][threadIdx.y];
 	}
@@ -46,9 +43,8 @@ __global__ void transpose_relu(float *odata, float *idata, int width, int height
 __global__ void matrixMultiplyAndRelu(float *A, float *B, float *C, float *b, float *T,
 									  int numARows, int numAColumns,
 									  int numBRows, int numBColumns,
-									  int numCRows, int numCColumns)
-{
-	//@@ Insert code to implement matrix multiplication here
+									  int numCRows, int numCColumns) {
+	// Insert code to implement matrix multiplication here
 	__shared__ float ds_M[TILE_WIDTH][TILE_WIDTH];
 	__shared__ float ds_N[TILE_WIDTH][TILE_WIDTH];
 	int bx = blockIdx.x, by = blockIdx.y,
@@ -57,8 +53,7 @@ __global__ void matrixMultiplyAndRelu(float *A, float *B, float *C, float *b, fl
 		Col = bx * TILE_WIDTH + tx;
 	float Pvalue = 0;
 
-	for (int m = 0; m < (numAColumns - 1) / TILE_WIDTH + 1; ++m)
-	{
+	for (int m = 0; m < (numAColumns - 1) / TILE_WIDTH + 1; ++m) {
 		if (Row < numARows && m * TILE_WIDTH + tx < numAColumns)
 			ds_M[ty][tx] = A[Row * numAColumns + m * TILE_WIDTH + tx];
 		else
@@ -74,8 +69,7 @@ __global__ void matrixMultiplyAndRelu(float *A, float *B, float *C, float *b, fl
 		__syncthreads();
 	}
 
-	if (Row < numCRows && Col < numCColumns)
-	{
+	if (Row < numCRows && Col < numCColumns) {
 		float num = (Pvalue + b[Row]);
 		T[Row * numCColumns + Col] = num;
 		C[Row * numCColumns + Col] = fmaxf(num, 0);
@@ -85,9 +79,8 @@ __global__ void matrixMultiplyAndRelu(float *A, float *B, float *C, float *b, fl
 __global__ void matrixMultiplyBackPropRelu(float *A, float *B, float *C,
 										   int numARows, int numAColumns,
 										   int numBRows, int numBColumns,
-										   int numCRows, int numCColumns)
-{
-	//@@ Insert code to implement matrix multiplication here
+										   int numCRows, int numCColumns) {
+	// Insert code to implement matrix multiplication here
 	__shared__ float ds_M[TILE_WIDTH][TILE_WIDTH];
 	__shared__ float ds_N[TILE_WIDTH][TILE_WIDTH];
 	int bx = blockIdx.x, by = blockIdx.y,
@@ -96,8 +89,7 @@ __global__ void matrixMultiplyBackPropRelu(float *A, float *B, float *C,
 		Col = bx * TILE_WIDTH + tx;
 	float Pvalue = 0;
 
-	for (int m = 0; m < (numAColumns - 1) / TILE_WIDTH + 1; ++m)
-	{
+	for (int m = 0; m < (numAColumns - 1) / TILE_WIDTH + 1; ++m) {
 		if (Row < numARows && m * TILE_WIDTH + tx < numAColumns)
 			ds_M[ty][tx] = A[Row * numAColumns + m * TILE_WIDTH + tx];
 		else
@@ -122,9 +114,8 @@ __global__ void matrixMultiplyUpdateWeights_relu(float *A, float *B, float *C,
 												 int numARows, int numAColumns,
 												 int numBRows, int numBColumns,
 												 int numCRows, int numCColumns,
-												 float learning_rate)
-{
-	//@@ Insert code to implement matrix multiplication here
+												 float learning_rate) {
+	// Insert code to implement matrix multiplication here
 	__shared__ float ds_M[TILE_WIDTH][TILE_WIDTH];
 	__shared__ float ds_N[TILE_WIDTH][TILE_WIDTH];
 	int bx = blockIdx.x, by = blockIdx.y,
@@ -133,8 +124,7 @@ __global__ void matrixMultiplyUpdateWeights_relu(float *A, float *B, float *C,
 		Col = bx * TILE_WIDTH + tx;
 	float Pvalue = 0;
 
-	for (int m = 0; m < (numAColumns - 1) / TILE_WIDTH + 1; ++m)
-	{
+	for (int m = 0; m < (numAColumns - 1) / TILE_WIDTH + 1; ++m) {
 		if (Row < numARows && m * TILE_WIDTH + tx < numAColumns)
 			ds_M[ty][tx] = A[Row * numAColumns + m * TILE_WIDTH + tx];
 		else
@@ -153,19 +143,16 @@ __global__ void matrixMultiplyUpdateWeights_relu(float *A, float *B, float *C,
 		C[Row * numCColumns + Col] = C[Row * numCColumns + Col] - learning_rate * (Pvalue / numAColumns);
 }
 
-__global__ void initializeBiasKernel_relu(float *b, int size)
-{
+__global__ void initializeBiasKernel_relu(float *b, int size) {
 
 	int index = blockIdx.x * blockDim.x + threadIdx.x;
 
-	if (index < size)
-	{
+	if (index < size) {
 		b[index] = 0.0;
 	}
 }
 
-__global__ void updateBiasKernel_relu(float *dZ, float *b, int cols, int row, float learning_rate)
-{
+__global__ void updateBiasKernel_relu(float *dZ, float *b, int cols, int row, float learning_rate) {
 	int bid = blockIdx.x;
 	extern __shared__ float _share[];
 	//float * _max = _share;
@@ -173,8 +160,7 @@ __global__ void updateBiasKernel_relu(float *dZ, float *b, int cols, int row, fl
 	float *sp = dZ + cols * bid;
 	_sum[threadIdx.x] = 0.0;
 
-	for (int id = threadIdx.x; id < cols; id += blockDim.x)
-	{
+	for (int id = threadIdx.x; id < cols; id += blockDim.x) {
 		//	int id = tid + threadIdx.x;
 		//if(id < cols){
 		_sum[threadIdx.x] += sp[id];
@@ -182,8 +168,7 @@ __global__ void updateBiasKernel_relu(float *dZ, float *b, int cols, int row, fl
 	}
 	__syncthreads();
 	int len = blockDim.x;
-	while (len != 1)
-	{
+	while (len != 1) {
 		__syncthreads();
 		int skip = (len + 1) >> 1;
 		if (threadIdx.x < (len >> 1))
@@ -196,8 +181,7 @@ __global__ void updateBiasKernel_relu(float *dZ, float *b, int cols, int row, fl
 	b[bid] -= learning_rate * (_sum[0] / cols);
 }
 
-LinearReluLayer::LinearReluLayer(std::string name, Shape W_shape) : W(W_shape), b(W_shape.y, 1)
-{
+LinearReluLayer::LinearReluLayer(std::string name, Shape W_shape) : W(W_shape), b(W_shape.y, 1) {
 	this->name = name;
 	b.allocateMemory();
 	W.allocateMemory();
@@ -205,19 +189,16 @@ LinearReluLayer::LinearReluLayer(std::string name, Shape W_shape) : W(W_shape), 
 	initializeWeightsRandomly_Relu();
 }
 
-LinearReluLayer::~LinearReluLayer()
-{
+LinearReluLayer::~LinearReluLayer() {
 }
 
-void LinearReluLayer::initializeWeightsRandomly_Relu()
-{
+void LinearReluLayer::initializeWeightsRandomly_Relu() {
 
 	std::default_random_engine generator;
 	std::normal_distribution<float> normal_distribution(0.0, 1.0);
 	float weights_init_threshold = 0.01;
 
-	for (int x = 0; x < W.shape.x; x++)
-	{
+	for (int x = 0; x < W.shape.x; x++) {
 		for (int y = 0; y < W.shape.y; y++)
 		{
 			W[y * W.shape.x + x] = normal_distribution(generator) * weights_init_threshold;
@@ -225,35 +206,16 @@ void LinearReluLayer::initializeWeightsRandomly_Relu()
 	}
 
 	W.copyHostToDevice();
-
-	/*
-
-	dim3 blockDim(256);
-	dim3 gridDim((W.shape.x * W.shape.y + blockDim.x - 1)/blockDim.x);
-
-	initializeWeightsKernel<<<gridDim, blockDim>>>(W.data_device.get(), W.shape.x * W.shape.y);
-	*/
 }
 
-void LinearReluLayer::initializeBiasWithZeros_Relu()
-{
-
-	/*
-	for (int x = 0; x < b.shape.x; x++) {
-		b[x] = 0;
-	}
-
-	b.copyHostToDevice();
-	*/
-
+void LinearReluLayer::initializeBiasWithZeros_Relu() {
 	dim3 blockDim(256);
 	dim3 gridDim((b.shape.x * b.shape.y + blockDim.x - 1) / blockDim.x);
 
 	initializeBiasKernel_relu<<<gridDim, blockDim>>>(b.data_device.get(), b.shape.x * b.shape.y);
 }
 
-Matrix &LinearReluLayer::forward(Matrix &A)
-{
+Matrix &LinearReluLayer::forward(Matrix &A) {
 	assert(W.shape.x == A.shape.y);
 
 	this->A = A;
@@ -268,21 +230,10 @@ Matrix &LinearReluLayer::forward(Matrix &A)
 	return Z;
 }
 
-void LinearReluLayer::computeAndStoreLayerOutput_Relu(Matrix &A)
-{
+void LinearReluLayer::computeAndStoreLayerOutput_Relu(Matrix &A) {
 	dim3 block_size(TILE_WIDTH, TILE_WIDTH);
 	dim3 num_of_blocks((Z.shape.x + block_size.x - 1) / block_size.x,
 					   (Z.shape.y + block_size.y - 1) / block_size.y);
-
-	/*
-	linearLayerForward<<<num_of_blocks, block_size>>>( W.data_device.get(),
-													   A.data_device.get(),
-													   Z.data_device.get(),
-													   b.data_device.get(),
-													   W.shape.x, W.shape.y,
-													   A.shape.x, A.shape.y);
-
-														 */
 
 	matrixMultiplyAndRelu<<<num_of_blocks, block_size>>>(W.data_device.get(),
 														 A.data_device.get(),
@@ -294,23 +245,18 @@ void LinearReluLayer::computeAndStoreLayerOutput_Relu(Matrix &A)
 														 Z.shape.y, Z.shape.x);
 }
 
-__global__ void ReluBackKernel(float *Z, float *dZ, int size)
-{
+__global__ void ReluBackKernel(float *Z, float *dZ, int size) {
 	int id = blockIdx.x * blockDim.x + threadIdx.x;
-	if (id < size)
-	{
+	if (id < size) {
 		if (Z[id] <= 0)
 			dZ[id] = 0;
 	}
 }
 
-Matrix &LinearReluLayer::backprop(Matrix &dZ, float learning_rate)
-{
+Matrix &LinearReluLayer::backprop(Matrix &dZ, float learning_rate) {
 	dA.allocateMemoryIfNotAllocated(A.shape);
 	WT.allocateMemoryIfNotAllocated(Shape(W.shape.y, W.shape.x));
 	AT.allocateMemoryIfNotAllocated(Shape(A.shape.y, A.shape.x));
-
-	//std::cout << "Here" << std::endl;
 
 	ReluBackProp(dZ);
 	NNException::throwIfDeviceErrorsOccurred("Cannot perform back propagation Relu Fusion.");
@@ -327,27 +273,16 @@ Matrix &LinearReluLayer::backprop(Matrix &dZ, float learning_rate)
 	return dA;
 }
 
-void LinearReluLayer::ReluBackProp(Matrix &dZ)
-{
+void LinearReluLayer::ReluBackProp(Matrix &dZ) {
 	dim3 block_size(256);
 	dim3 num_of_block((Z.shape.x * Z.shape.y + block_size.x - 1) / block_size.x);
 	ReluBackKernel<<<num_of_block, block_size>>>(Z.data_device.get(), dZ.data_device.get(), dZ.shape.x * dZ.shape.y);
 }
 
-void LinearReluLayer::computeAndStoreBackpropError_Relu(Matrix &dZ)
-{
+void LinearReluLayer::computeAndStoreBackpropError_Relu(Matrix &dZ) {
 	dim3 block_size(TILE_WIDTH, TILE_WIDTH);
 	dim3 num_of_blocks((A.shape.x + block_size.x - 1) / block_size.x,
 					   (A.shape.y + block_size.y - 1) / block_size.y);
-
-	/*
-
-	linearLayerBackprop<<<num_of_blocks, block_size>>>( W.data_device.get(),
-														dZ.data_device.get(),
-														dA.data_device.get(),
-														W.shape.x, W.shape.y,
-														dZ.shape.x, dZ.shape.y);
-														*/
 
 	dim3 transpose_relu_block(BLOCK_DIM, BLOCK_DIM);
 	dim3 num_t_blocks((W.shape.x + transpose_relu_block.x - 1) / transpose_relu_block.x,
@@ -362,20 +297,10 @@ void LinearReluLayer::computeAndStoreBackpropError_Relu(Matrix &dZ)
 															  dA.shape.y, dA.shape.x);
 }
 
-void LinearReluLayer::updateWeights_Relu(Matrix &dZ, float learning_rate)
-{
+void LinearReluLayer::updateWeights_Relu(Matrix &dZ, float learning_rate) {
 	dim3 block_size(TILE_WIDTH, TILE_WIDTH);
 	dim3 num_of_blocks((W.shape.x + block_size.x - 1) / block_size.x,
 					   (W.shape.y + block_size.y - 1) / block_size.y);
-
-	/*
-	linearLayerUpdateWeights<<<num_of_blocks, block_size>>>(dZ.data_device.get(),
-															A.data_device.get(),
-															W.data_device.get(),
-															dZ.shape.x, dZ.shape.y,
-															A.shape.x, A.shape.y,
-															learning_rate);
-															*/
 
 	dim3 transpose_relu_block(BLOCK_DIM, BLOCK_DIM);
 	dim3 num_t_blocks((A.shape.x + transpose_relu_block.x - 1) / transpose_relu_block.x,
@@ -391,38 +316,24 @@ void LinearReluLayer::updateWeights_Relu(Matrix &dZ, float learning_rate)
 																	learning_rate);
 }
 
-void LinearReluLayer::updateBias_Relu(Matrix &dZ, float learning_rate)
-{
-	/*
-	dim3 block_size(256);
-	dim3 num_of_blocks( (dZ.shape.y * dZ.shape.x + block_size.x - 1) / block_size.x);
-	linearLayerUpdateBias<<<num_of_blocks, block_size>>>(dZ.data_device.get(),
-														 b.data_device.get(),
-														 dZ.shape.x, dZ.shape.y,
-														 b.shape.x, learning_rate);
-
-											*/
+void LinearReluLayer::updateBias_Relu(Matrix &dZ, float learning_rate) {
 	dim3 block_size(std::min(256, int(dZ.shape.x)));
 	dim3 num_of_blocks(dZ.shape.y);
 	updateBiasKernel_relu<<<num_of_blocks, block_size, sizeof(float) * block_size.x>>>(dZ.data_device.get(), b.data_device.get(), dZ.shape.x, dZ.shape.y, learning_rate);
 }
 
-int LinearReluLayer::getXDim() const
-{
+int LinearReluLayer::getXDim() const {
 	return W.shape.x;
 }
 
-int LinearReluLayer::getYDim() const
-{
+int LinearReluLayer::getYDim() const {
 	return W.shape.y;
 }
 
-Matrix LinearReluLayer::getWeightsMatrix() const
-{
+Matrix LinearReluLayer::getWeightsMatrix() const {
 	return W;
 }
 
-Matrix LinearReluLayer::getBiasVector() const
-{
+Matrix LinearReluLayer::getBiasVector() const {
 	return b;
 }

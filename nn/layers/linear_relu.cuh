@@ -1,7 +1,7 @@
 #pragma once
 
-#include "nn_layer.cuh"
-#include "../utils/nn_exception.cuh"
+#include "layer.cuh"
+#include "../utils/exception.cuh"
 #include "../utils/shape.cuh"
 
 class LinearReluLayer : public NNLayer {
