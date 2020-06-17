@@ -2,13 +2,13 @@
 
 #include <vector>
 #include "../layers/layer.cuh"
-#include "../utils/cce_cost.cuh"
+#include "../utils/cce_loss.cuh"
 #include "../utils/exception.cuh"
 
 class NeuralNetwork {
 private:
 	std::vector<NNLayer*> layers;
-	CCECost cce_cost;
+	CCELoss cce_cost;
 
 	Matrix Y;
 	Matrix dY;

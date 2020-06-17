@@ -8,7 +8,7 @@
 #include "layers/softmax_activation.cuh"
 #include "neurals/neural_network.cuh"
 #include "neurals/snake_dataset.cuh"
-#include "utils/cce_cost.cuh"
+#include "utils/cce_loss.cuh"
 #include "utils/result.cuh"
 
 #define num_batches_train 3000
@@ -29,7 +29,7 @@ int main(int argc, char *argv[]){
 		epochs = std::stoi(argv[1]);
 	}
 
-	CCECost cce_cost;
+	CCELoss cce_cost;
 	NeuralNetwork nn;
 
 	nn.addLayer(new LinearLayer("linear_1", Shape(input_size, 256)));
