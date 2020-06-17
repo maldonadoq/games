@@ -1,45 +1,37 @@
 #include "relu_activation.cuh"
 
 __global__ void reluActivationForward(float *Z, float *A,
-									  int Z_x_dim, int Z_y_dim)
-{
+									  int Z_x_dim, int Z_y_dim) {
 
 	int index = blockIdx.x * blockDim.x + threadIdx.x;
 
-	if (index < Z_x_dim * Z_y_dim)
-	{
+	if (index < Z_x_dim * Z_y_dim) {
 		A[index] = fmaxf(Z[index], 0);
 	}
 }
 
 __global__ void reluActivationBackprop(float *Z, float *dA, float *dZ,
-									   int Z_x_dim, int Z_y_dim)
-{
+									   int Z_x_dim, int Z_y_dim) {
 
 	int index = blockIdx.x * blockDim.x + threadIdx.x;
 
-	if (index < Z_x_dim * Z_y_dim)
-	{
-		if (Z[index] > 0)
-		{
+	if (index < Z_x_dim * Z_y_dim) {
+		if (Z[index] > 0) {
 			dZ[index] = dA[index];
 		}
-		else
-		{
+		else {
 			dZ[index] = 0;
 		}
 	}
 }
 
-ReLUActivation::ReLUActivation(std::string name)
-{
+ReLUActivation::ReLUActivation(std::string name) {
 	this->name = name;
 }
 
 ReLUActivation::~ReLUActivation() {}
 
-Matrix &ReLUActivation::forward(Matrix &Z)
-{
+Matrix &ReLUActivation::forward(Matrix &Z) {
 	this->Z = Z;
 	A.allocateMemoryIfNotAllocated(Z.shape);
 
@@ -53,8 +45,7 @@ Matrix &ReLUActivation::forward(Matrix &Z)
 	return A;
 }
 
-Matrix &ReLUActivation::backprop(Matrix &dA, float learning_rate)
-{
+Matrix &ReLUActivation::backprop(Matrix &dA, float learning_rate) {
 	dZ.allocateMemoryIfNotAllocated(Z.shape);
 
 	dim3 block_size(256);
