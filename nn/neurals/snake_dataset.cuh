@@ -29,3 +29,6 @@ public:
 	std::vector<Matrix> &getBatches();
 	std::vector<Matrix> &getTargets();
 };
+
+
+int computeAccuracy(const Matrix &, const Matrix &, int);

@@ -105,3 +105,31 @@ std::vector<Matrix> &SnakeDataset::getBatches(){
 std::vector<Matrix> &SnakeDataset::getTargets(){
 	return targets;
 }
+
+// ----------------------------------------------
+
+int computeAccuracy(const Matrix &predictions, const Matrix &targets, int k){
+	int m = predictions.shape.x;
+	int correct_predictions = 0;
+
+	for (int i = 0; i < m; i++){
+		float _max = 0.0;
+		float _maxt = 0.0;
+		int label = 0;
+		int labely = 0;
+		for (int j = 0; j < k; j++){
+			if (predictions[j * m + i] > _max){
+				_max = predictions[j * m + i];
+				label = j;
+			}
+			if (targets[j * m + i] > _maxt){
+				_maxt = targets[j * m + i];
+				labely = j;
+			}
+		}
+		if (label == labely)
+			correct_predictions++;
+	}
+
+	return correct_predictions;
+}
