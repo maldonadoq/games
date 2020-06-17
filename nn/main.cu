@@ -9,7 +9,6 @@
 #include "neurals/neural_network.cuh"
 #include "neurals/snake_dataset.cuh"
 #include "utils/cce_loss.cuh"
-#include "utils/result.cuh"
 
 #define num_batches_train 3000
 #define num_batches_test 150
