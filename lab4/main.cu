@@ -62,7 +62,7 @@ int main(int argc, char *argv[]){
 
 	printVector<int>({1,0,0});
 	printVector<int>(resInt);
-	printVector<float>(resFloat);	
+	printVector<float>(resFloat);
 	
 	return 0;
 }

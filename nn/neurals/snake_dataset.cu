@@ -23,16 +23,16 @@ SnakeDataset::SnakeDataset(int num_batches, size_t batch_size, string path_x, st
 		}
 	}
 
-	this->images = new float *[this->size];
+	this->inputs = new float *[this->size];
 	for (i = 0; i < this->size; i++){
-		this->images[i] = new float[input_size];
+		this->inputs[i] = new float[input_size];
 	}
 
 	i = 0;
 	j = 0;
 	while (!file.eof()){
 		file >> tmp;
-		this->images[i][j] = tmp;
+		this->inputs[i][j] = tmp;
 		j += 1;
 		i += (j == input_size) ? 1 : 0;
 		j %= input_size;
@@ -79,7 +79,7 @@ SnakeDataset::SnakeDataset(int num_batches, size_t batch_size, string path_x, st
 		for (int j = 0; j < batch_size; j++){
 			int index = i * batch_size + j;
 			for (int k = 0; k < input_size; k++){
-				batches[i][k * batch_size + j] = this->images[index][k];
+				batches[i][k * batch_size + j] = this->inputs[index][k];
 			}
 
 			for (int k = 0; k < output_size; k++){

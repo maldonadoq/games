@@ -15,7 +15,7 @@ private:
 	size_t batch_size;
 	int num_batches;
 	int size;
-	float **images;
+	float **inputs;
 	float **labels;
 
 	std::vector<Matrix> batches;
