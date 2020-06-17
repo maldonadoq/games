@@ -1,9 +1,9 @@
 #pragma once
 
 #include <vector>
-#include "../layers/nn_layer.cuh"
+#include "../layers/layer.cuh"
 #include "../utils/cce_cost.cuh"
-#include "../utils/nn_exception.cuh"
+#include "../utils/exception.cuh"
 
 class NeuralNetwork {
 private:

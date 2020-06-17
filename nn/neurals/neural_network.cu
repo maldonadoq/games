@@ -27,14 +27,7 @@ Matrix NeuralNetwork::forward(Matrix X) {
 
 void NeuralNetwork::backprop(Matrix predictions, Matrix target) {
 	dY.allocateMemoryIfNotAllocated(predictions.shape);
-	/*
-	for(int i = 0 ; i < target.shape.x ; i++){
-    for(int j = 0 ; j < target.shape.y ; j++){
-      std::cout << target.data_host.get()[i * target.shape.y + j] << " ";
-    }
-    std::cout << std::endl;
-  }
-	*/
+
 	Matrix error = cce_cost.dCost(predictions, target, dY);
 
 	for (auto it = this->layers.rbegin(); it != this->layers.rend(); it++) {
