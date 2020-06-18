@@ -9,7 +9,7 @@ with warnings.catch_warnings():
 
 if __name__ == "__main__":
 	data = SnakeData()
-	data.generate(100, 1000)
+	data.generate(1000, 1000)
 	data.save()
 
 	model = Sequential()
@@ -18,6 +18,6 @@ if __name__ == "__main__":
 	model.add(Dense(output_dim=3,  activation='softmax'))
 
 	model.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
-	model.fit(np.array(data.train_x).reshape(-1,7), np.array(data.train_y).reshape(-1,3), batch_size=256,epochs=5)
+	model.fit(np.array(data.train_x).reshape(-1,7), np.array(data.train_y).reshape(-1,3), batch_size=256,epochs=15)
 
 	model.save('data/model.h5')

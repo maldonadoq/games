@@ -32,13 +32,13 @@ class SnakeData:
 		if(direc == -1):
 			if(left_block == 1):
 				if(front_block == 1 and right_block == 0):
-					direc, btn_dir = direction_vector(snake_pos, angle, 1)
+					direc, btn_dir = dir_vector(snake_pos, angle, 1)
 					self.train_y.append([0,0,1])
 				elif(front_block == 0 and right_block == 1):
-					direc, btn_dir = direction_vector(snake_pos, angle, 0)
+					direc, btn_dir = dir_vector(snake_pos, angle, 0)
 					self.train_y.append([0,1,0])
 				elif(front_block == 0 and right_block == 0):
-					direc, btn_dir = direction_vector(snake_pos, angle, 1)
+					direc, btn_dir = dir_vector(snake_pos, angle, 1)
 					self.train_y.append([0,0,1])
 			else:
 				self.train_y.append([1,0,0])
@@ -46,13 +46,13 @@ class SnakeData:
 		elif(direc == 0):
 			if(front_block == 1):
 				if(left_block == 1 and right_block == 0):
-					direc, btn_dir = direction_vector(snake_pos, angle, 1)
+					direc, btn_dir = dir_vector(snake_pos, angle, 1)
 					self.train_y.append([0,0,1])
 				elif(left_block == 0 and right_block == 1):
-					direc, btn_dir = direction_vector(snake_pos, angle, -1)
+					direc, btn_dir = dir_vector(snake_pos, angle, -1)
 					self.train_y.append([1,0,0])
 				elif(left_block == 0 and right_block == 0):
-					direc, btn_dir = direction_vector(snake_pos, angle, 1)
+					direc, btn_dir = dir_vector(snake_pos, angle, 1)
 					self.train_y.append([0,0,1])
 			else:
 				self.train_y.append([0,1,0])
@@ -60,13 +60,13 @@ class SnakeData:
 		else:
 			if(right_block == 1):
 				if(left_block == 1 and front_block == 0):
-					direc, btn_dir = direction_vector(snake_pos, angle, 0)
+					direc, btn_dir = dir_vector(snake_pos, angle, 0)
 					self.train_y.append([0,1,0])
 				elif(left_block == 0 and front_block == 1):
-					direc, btn_dir = direction_vector(snake_pos, angle, -1)
+					direc, btn_dir = dir_vector(snake_pos, angle, -1)
 					self.train_y.append([1,0,0])
 				elif(left_block == 0 and front_block == 0):
-					direc, btn_dir = direction_vector(snake_pos, angle, -1)
+					direc, btn_dir = dir_vector(snake_pos, angle, -1)
 					self.train_y.append([1,0,0])
 			else:
 				self.train_y.append([0,0,1])

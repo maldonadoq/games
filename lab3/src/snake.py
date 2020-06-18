@@ -45,10 +45,10 @@ def gen_rnd_dir(snake_pos, angle_between):
 	else:
 		direc = 0
 
-	return direction_vector(snake_pos, angle_between, direc)
+	return dir_vector(snake_pos, angle_between, direc)
 
 
-def direction_vector(snake_pos, angle_between, direc):
+def dir_vector(snake_pos, angle_between, direc):
 	curr_dir_vect = np.array(snake_pos[0]) - np.array(snake_pos[1])
 	left_dir_vect = np.array([curr_dir_vect[1], -curr_dir_vect[0]])
 	right_dir_vect = np.array([-curr_dir_vect[1], curr_dir_vect[0]])
@@ -84,14 +84,14 @@ def block_directions(snake_pos):
 	left_dir_vect = np.array([curr_dir_vect[1], -curr_dir_vect[0]])
 	right_dir_vect = np.array([-curr_dir_vect[1], curr_dir_vect[0]])
 
-	front_block = direction_block(snake_pos, curr_dir_vect)
-	left_block = direction_block(snake_pos, left_dir_vect)
-	right_block = direction_block(snake_pos, right_dir_vect)
+	front_block = dir_block(snake_pos, curr_dir_vect)
+	left_block = dir_block(snake_pos, left_dir_vect)
+	right_block = dir_block(snake_pos, right_dir_vect)
 
 	return curr_dir_vect, front_block, left_block, right_block
 
 
-def direction_block(snake_pos, curr_dir_vect):
+def dir_block(snake_pos, curr_dir_vect):
 	next_step = snake_pos[0] + curr_dir_vect
 	snake_start = snake_pos[0]
 	if(collision_with_boundaries(next_step) == 1 or collision_with_self(next_step.tolist(), snake_pos) == 1):
@@ -158,6 +158,6 @@ def play_game(snake_start, snake_pos, apple_pos, btn_dir, score, display):
 
 	snake_pos, apple_pos, score = generate_snake(snake_start, snake_pos, apple_pos, btn_dir, score)
 	pg.display.update()
-	time.sleep(0.025)
+	time.sleep(0.01)
 
 	return snake_pos, apple_pos, score

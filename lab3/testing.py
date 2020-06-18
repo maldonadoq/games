@@ -16,7 +16,7 @@ if __name__ == "__main__":
 
 	model = load_model('data/model.h5')
 
-	games = 2
+	games = 5
 	steps = 1000
 
 	max_score = 2
@@ -30,7 +30,6 @@ if __name__ == "__main__":
 
 		for _ in range(steps):
 			curr_dir_vect, front_block, left_block, right_block = block_directions(snake_pos)
-
 			angle, snake_dir_vect, apple_dir_vect_norm, snake_dir_vect_norm = angle_between(snake_pos, apple_pos)
 			
 			pred = model.predict(np.array([	left_block, front_block, right_block,
