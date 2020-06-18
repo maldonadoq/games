@@ -10,7 +10,7 @@ struct Point{
 };
 
 /*
-Snake Direction:
+Snake direc:
 	-1: Right    1: Left
 	-2: Up       2: Down
 */
