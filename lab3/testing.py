@@ -16,7 +16,7 @@ if __name__ == "__main__":
 
 	model = load_model('data/model.h5')
 
-	games = 5
+	games = 2
 	steps = 1000
 
 	max_score = 2

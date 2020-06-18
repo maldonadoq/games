@@ -18,6 +18,6 @@ if __name__ == "__main__":
 	model.add(Dense(output_dim=3,  activation='softmax'))
 
 	model.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
-	model.fit(np.array(data.train_x).reshape(-1,7), np.array(data.train_y).reshape(-1,3), batch_size=256,epochs=15)
+	model.fit(np.array(data.train_x).reshape(-1,7), np.array(data.train_y).reshape(-1,3), batch_size=256,epochs=10)
 
 	model.save('data/model.h5')
