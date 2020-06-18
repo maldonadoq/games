@@ -12,7 +12,7 @@ run:
 	# $(NVCC) -c src/result.cu
 	# $(NVCC) -o main.out *.o
 
-	$(CC) -c main.cpp
+	$(CC) -c snake.cpp
 	$(CC) -o main.out *.o $(LIBS)
 clean:
 	rm *.o *.out

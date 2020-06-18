@@ -7,12 +7,39 @@ using std::deque;
 struct Point{
 	int x;
 	int y;
+
+	Point& operator-(const Point& rhs){ 
+		x -= rhs.x;
+		y -= rhs.y;
+		return *this;
+	}
+
+	Point operator+(const Point rhs){ 
+		x += rhs.x;
+		y += rhs.y;
+		return *this;
+	}
+};
+
+std::ostream& operator<<(std::ostream& out, const Point& p){
+	out << "[" << p.x << "," << p.y  << "]";
+	return out;
+}
+
+struct Data{
+	float left;
+	float front;
+	float right;
+	float apple_x;
+	float apple_y;
+	float snake_x;
+	float snake_y;
 };
 
 /*
 Snake direc:
-	-1: Right    1: Left
-	-2: Up       2: Down
+	0: Right    1: Left
+	2: Up       3: Down
 */
 
 int mod(int x, int m){
@@ -31,17 +58,16 @@ class Snake{
 public:
 	deque<Point> body;
 	Point head;
-
 	int dim;
-	int dir;
 
 	Snake();
-	Snake(Point, int, int);
+	Snake(int);
 	
 	void grow(Point);
-	void update();
-	bool setDir(int);
+	void move(int);
+	bool isInBody(Point);
 	void reset();
+	Data getData();
 
 	~Snake();
 };
@@ -49,12 +75,9 @@ public:
 Snake::Snake(){
 }
 
-Snake::Snake(Point point, int dim, int dir=-1){
-	this->head = point;
-	this->body.push_front(point);
-
+Snake::Snake(int dim){
 	this->dim = dim;
-	this->dir = dir;
+	reset();
 }
 
 void Snake::grow(Point point){
@@ -62,26 +85,16 @@ void Snake::grow(Point point){
 }
 
 void Snake::reset(){
-	this->head.x = 0;
-	this->head.y = 0;
+	this->head = {1,0};
 
 	this->body.clear();
-	this->body.push_front(this->head);
+	this->body.push_back({1,0});
+	this->body.push_back({0,0});
 }
 
-bool Snake::setDir(int dir){
-	if(this->dir == -dir){
-		return true;
-	}
-
-	this->dir = dir;
-	return false;
-}
-
-void Snake::update(){
-
-	switch (this->dir){
-		case -1:{
+void Snake::move(int dir){
+	switch (dir){
+		case 0:{
 			this->head.x = mod(this->head.x + 1, this->dim);
 			this->body.push_front(this->head);
 			this->body.pop_back();
@@ -93,13 +106,13 @@ void Snake::update(){
 			this->body.pop_back();
 			break;
 		}
-		case -2:{
+		case 2:{
 			this->head.y = mod(this->head.y + 1, this->dim);
 			this->body.push_front(this->head);
 			this->body.pop_back();
 			break;
 		}
-		case 2:{
+		case 3:{
 			this->head.y = mod(this->head.y - 1, this->dim);
 			this->body.push_front(this->head);
 			this->body.pop_back();
@@ -110,6 +123,47 @@ void Snake::update(){
 	}
 }
 
+bool Snake::isInBody(Point point){
+	for(auto p: this->body){
+		if((p.x == point.x) and (p.y == point.y)){
+			return true;
+		}
+	}
+
+	return false;
+}
+
+Data Snake::getData(){
+	Data input;
+
+	Point dir = this->head - this->body[1];
+	Point right = {dir.y, -dir.x};
+	Point left = {-dir.y, dir.x};
+	
+	return input;
+}
+
 Snake::~Snake(){
 	this->body.clear();
 }
+
+
+/* def block_directions(snake_pos):
+	curr_dir_vect = np.array(snake_pos[0]) - np.array(snake_pos[1])
+
+	left_dir_vect = np.array([curr_dir_vect[1], -curr_dir_vect[0]])
+	right_dir_vect = np.array([-curr_dir_vect[1], curr_dir_vect[0]])
+
+	front_block = dir_block(snake_pos, curr_dir_vect)
+	left_block = dir_block(snake_pos, left_dir_vect)
+	right_block = dir_block(snake_pos, right_dir_vect)
+
+	return curr_dir_vect, front_block, left_block, right_block
+	
+def dir_block(snake_pos, curr_dir_vect):
+	next_step = snake_pos[0] + curr_dir_vect
+	snake_start = snake_pos[0]
+	if(collision_with_boundaries(next_step) == 1 or collision_with_self(next_step.tolist(), snake_pos) == 1):
+		return 1
+	else:
+		return 0 */
