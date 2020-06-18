@@ -35,8 +35,8 @@ void glDraw(){
 		death = false;
 	}
 	else{
-		// input = snake->getData();
-		// snake->move(0);
+		snake->getData(input);
+		//snake->move(0);
 		glColor3f(0,1,0);
 
 		for(auto point:snake->body){
@@ -122,8 +122,8 @@ int main(int argc, char *argv[]){
 
 	glutReshapeFunc(&glWindowRedraw);
 	glutKeyboardFunc(&glWindowKey);
-	//glutIdleFunc(&glIdle);
-	glTimer(0);
+	glutIdleFunc(&glIdle);
+	//glTimer(0);
 	glutMainLoop();
 
 	delete snake;

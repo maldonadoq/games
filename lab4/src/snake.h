@@ -8,16 +8,12 @@ struct Point{
 	int x;
 	int y;
 
-	Point& operator-(const Point& rhs){ 
-		x -= rhs.x;
-		y -= rhs.y;
-		return *this;
+	Point operator-(const Point rhs){ 
+		return {x-rhs.x, y-rhs.y};
 	}
 
 	Point operator+(const Point rhs){ 
-		x += rhs.x;
-		y += rhs.y;
-		return *this;
+		return {x+rhs.x, y+rhs.y};
 	}
 };
 
@@ -67,7 +63,7 @@ public:
 	void move(int);
 	bool isInBody(Point);
 	void reset();
-	Data getData();
+	void getData(Data &);
 
 	~Snake();
 };
@@ -77,6 +73,7 @@ Snake::Snake(){
 
 Snake::Snake(int dim){
 	this->dim = dim;
+	std::cout << this->dim << std::endl;
 	reset();
 }
 
@@ -133,14 +130,14 @@ bool Snake::isInBody(Point point){
 	return false;
 }
 
-Data Snake::getData(){
-	Data input;
-
+void Snake::getData(Data &input){		
 	Point dir = this->head - this->body[1];
 	Point right = {dir.y, -dir.x};
 	Point left = {-dir.y, dir.x};
-	
-	return input;
+
+	std::cout << "Front: " << isInBody(this->head + dir) << std::endl;
+	std::cout << "Right: " << isInBody(this->head + right) << std::endl;
+	std::cout << "Left : " << isInBody(this->head + left) << std::endl << std::endl;
 }
 
 Snake::~Snake(){
