@@ -93,7 +93,6 @@ def block_directions(snake_pos):
 
 def dir_block(snake_pos, curr_dir_vect):
 	next_step = snake_pos[0] + curr_dir_vect
-	snake_start = snake_pos[0]
 	if(collision_with_boundaries(next_step) == 1 or collision_with_self(next_step.tolist(), snake_pos) == 1):
 		return 1
 	else:
