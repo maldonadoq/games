@@ -31,7 +31,7 @@ if __name__ == "__main__":
 		for _ in range(steps):
 			curr_dir_vect, front_block, left_block, right_block = block_directions(snake_pos)
 
-			angle, snake_dir_vect, apple_dir_vect_norm, snake_dir_vect_norm = angle_with_apple(snake_pos, apple_pos)
+			angle, snake_dir_vect, apple_dir_vect_norm, snake_dir_vect_norm = angle_between(snake_pos, apple_pos)
 			
 			pred = model.predict(np.array([	left_block, front_block, right_block,
 											apple_dir_vect_norm[0], snake_dir_vect_norm[0], apple_dir_vect_norm[1],
@@ -52,13 +52,13 @@ if __name__ == "__main__":
 			if(pred_dir == 1):
 				new_direction = np.array([-new_direction[1], new_direction[0]])
 
-			button_direction = generate_button_direction(new_direction)
+			btn_dir = gen_btn_dir(new_direction)
 
 			next_step = snake_pos[0] + curr_dir_vect
 			if(collision_with_boundaries(snake_pos[0]) == 1 or collision_with_self(next_step.tolist(), snake_pos) == 1):
 				break
 			
-			snake_pos, apple_pos, score = play_game(snake_start, snake_pos, apple_pos, button_direction, score, display)
+			snake_pos, apple_pos, score = play_game(snake_start, snake_pos, apple_pos, btn_dir, score, display)
 
 			if(score > max_score):
 				max_score = score

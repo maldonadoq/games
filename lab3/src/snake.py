@@ -17,66 +17,66 @@ def starting_position():
 def apple_dist_from_snake(apple_pos, snake_pos):
 	return np.linalg.norm(np.array(apple_pos) - np.array(snake_pos[0]))
 
-def angle_with_apple(snake_pos, apple_pos):
-	apple_dir_vect = np.array(apple_pos) - np.array(snake_pos[0])
-	snake_dir_vect = np.array(snake_pos[0]) - np.array(snake_pos[1])
+def angle_between(snake_pos, apple_pos):
+	apple_dir = np.array(apple_pos) - np.array(snake_pos[0])
+	snake_dir = np.array(snake_pos[0]) - np.array(snake_pos[1])
 
-	norm_of_apple_dir_vect = np.linalg.norm(apple_dir_vect)
-	norm_of_snake_dir_vect = np.linalg.norm(snake_dir_vect)
-	if(norm_of_apple_dir_vect == 0):
-		norm_of_apple_dir_vect = 10
-	if(norm_of_snake_dir_vect == 0):
-		norm_of_snake_dir_vect = 10
+	norm_apple_dir = np.linalg.norm(apple_dir)
+	norm_snake_dir = np.linalg.norm(snake_dir)
+	if(norm_apple_dir == 0):
+		norm_apple_dir = 10
+	if(norm_snake_dir == 0):
+		norm_snake_dir = 10
 
-	apple_dir_vect_norm = apple_dir_vect / norm_of_apple_dir_vect
-	snake_dir_vect_norm = snake_dir_vect / norm_of_snake_dir_vect
+	apple_dir = apple_dir / norm_apple_dir
+	snake_dir = snake_dir / norm_snake_dir
 	angle = math.atan2(
-			apple_dir_vect_norm[1] * snake_dir_vect_norm[0] - apple_dir_vect_norm[0] * snake_dir_vect_norm[1],
-			apple_dir_vect_norm[1] * snake_dir_vect_norm[1] + apple_dir_vect_norm[0] * snake_dir_vect_norm[0]
+			apple_dir[1] * snake_dir[0] - apple_dir[0] * snake_dir[1],
+			apple_dir[1] * snake_dir[1] + apple_dir[0] * snake_dir[0]
 		) / math.pi
-	return angle, snake_dir_vect, apple_dir_vect_norm, snake_dir_vect_norm
+	return angle, snake_dir, apple_dir, snake_dir
 
-def generate_random_direction(snake_pos, angle_with_apple):
-	direction = 0
-	if(angle_with_apple > 0):
-		direction = 1
-	elif(angle_with_apple < 0):
-		direction = -1
+def gen_rnd_dir(snake_pos, angle_between):
+	direc = 0
+	if(angle_between > 0):
+		direc = 1
+	elif(angle_between < 0):
+		direc = -1
 	else:
-		direction = 0
+		direc = 0
 
-	return direction_vector(snake_pos, angle_with_apple, direction)
+	return direction_vector(snake_pos, angle_between, direc)
 
 
-def direction_vector(snake_pos, angle_with_apple, direction):
+def direction_vector(snake_pos, angle_between, direc):
 	curr_dir_vect = np.array(snake_pos[0]) - np.array(snake_pos[1])
 	left_dir_vect = np.array([curr_dir_vect[1], -curr_dir_vect[0]])
 	right_dir_vect = np.array([-curr_dir_vect[1], curr_dir_vect[0]])
 
-	new_direction = curr_dir_vect
+	new_dir = curr_dir_vect
 
-	if(direction == -1):
-		new_direction = left_dir_vect
-	if(direction == 1):
-		new_direction = right_dir_vect
+	if(direc == -1):
+		new_dir = left_dir_vect
+	if(direc == 1):
+		new_dir = right_dir_vect
 
-	button_direction = generate_button_direction(new_direction)
+	btn_dir = gen_btn_dir(new_dir)
 
-	return direction, button_direction
+	return direc, btn_dir
 
 
-def generate_button_direction(new_direction):
-	button_direction = 0
-	if(new_direction.tolist() == [10, 0]):
-		button_direction = 1
-	elif(new_direction.tolist() == [-10, 0]):
-		button_direction = 0
-	elif(new_direction.tolist() == [0, 10]):
-		button_direction = 2
+def gen_btn_dir(new_dir):
+	btn_dir = 0
+	if(new_dir.tolist() == [10, 0]):
+		btn_dir = 1
+	elif(new_dir.tolist() == [-10, 0]):
+		btn_dir = 0
+	elif(new_dir.tolist() == [0, 10]):
+		btn_dir = 2
 	else:
-		button_direction = 3
+		btn_dir = 3
 
-	return button_direction
+	return btn_dir
 
 def block_directions(snake_pos):
 	curr_dir_vect = np.array(snake_pos[0]) - np.array(snake_pos[1])
@@ -119,12 +119,12 @@ def collision_with_self(snake_start, snake_pos):
 	else:
 		return 0
 
-def generate_snake(snake_start, snake_pos, apple_pos, button_direction, score):
-	if button_direction == 1:
+def generate_snake(snake_start, snake_pos, apple_pos, btn_dir, score):
+	if btn_dir == 1:
 		snake_start[0] += 10
-	elif button_direction == 0:
+	elif btn_dir == 0:
 		snake_start[0] -= 10
-	elif button_direction == 2:
+	elif btn_dir == 2:
 		snake_start[1] += 10
 	else:
 		snake_start[1] -= 10
@@ -139,8 +139,8 @@ def generate_snake(snake_start, snake_pos, apple_pos, button_direction, score):
 
 	return snake_pos, apple_pos, score
 
-def play(snake_start, snake_pos, apple_pos, button_direction, score):	
-	snake_pos, apple_pos, score = generate_snake(snake_start, snake_pos, apple_pos, button_direction, score)
+def play(snake_start, snake_pos, apple_pos, btn_dir, score):	
+	snake_pos, apple_pos, score = generate_snake(snake_start, snake_pos, apple_pos, btn_dir, score)
 	return snake_pos, apple_pos, score
 
 def display_snake(snake_pos, display):
@@ -150,13 +150,13 @@ def display_snake(snake_pos, display):
 def display_apple(apple_pos, display):
 	pg.draw.rect(display, (0, 255, 0), pg.Rect(apple_pos[0], apple_pos[1], 10, 10))
 
-def play_game(snake_start, snake_pos, apple_pos, button_direction, score, display):
+def play_game(snake_start, snake_pos, apple_pos, btn_dir, score, display):
 	display.fill((255, 255, 255))
 
 	display_apple(apple_pos, display)
 	display_snake(snake_pos, display)
 
-	snake_pos, apple_pos, score = generate_snake(snake_start, snake_pos, apple_pos, button_direction, score)
+	snake_pos, apple_pos, score = generate_snake(snake_start, snake_pos, apple_pos, btn_dir, score)
 	pg.display.update()
 	time.sleep(0.025)
 
