@@ -27,14 +27,13 @@ Matrix *Y;
 #include "src/snake.h"
 
 #define KEY_ESC 27
-#define KEY_D 'd'	// Right
-#define KEY_A 'a'	// Left
-#define KEY_W 'w'	// Up
-#define KEY_S 's'	// Down
+#define KEY_SPACE ' '	// Pause
+#define KEY_R 'r'		// Reload
 
 float size = 500;
 float unit = 10;
 bool death = false;
+bool pause = false;
 
 Snake *snake_game;
 Point apple;
@@ -60,15 +59,15 @@ void glDraw(){
 		death = false;
 	}
 	else{
-		input = snake_game->getData(apple);
 
-		*Y = nn->forward(Matrix(Shape(1, input_size), input));
-		Y->copyDeviceToHost();
-		output = firstResultInt(*Y, output_size);
-		//printVector(input);
-		printVector(output);
+		if(!pause){
+			input = snake_game->getData(apple);
+			*Y = nn->forward(Matrix(Shape(1, input_size), input));
+			Y->copyDeviceToHost();
+			output = firstResultInt(*Y, output_size);
+			snake_game->play(output);
+		}
 
-		//snake_game->move(0);
 		glColor3f(0,1,0);
 
 		for(auto point:snake_game->body){
@@ -105,9 +104,6 @@ void glWindowRedraw(int w, int h){
 	glOrtho(0, size, 0, size, -1.0f, 1.0f);
 }
 
-void glIdle(){
-	glutPostRedisplay();
-}
 
 void glWindowKey(unsigned char key, int x, int y) {
 	switch (key) {
@@ -115,25 +111,26 @@ void glWindowKey(unsigned char key, int x, int y) {
 			exit(0);
 			break;
 		}
-		case KEY_D:{
-			snake_game->move(0);
+		case KEY_R:{
+			input = snake_game->getData(apple);
+			*Y = nn->forward(Matrix(Shape(1, input_size), input));
+			Y->copyDeviceToHost();
+			output = firstResultInt(*Y, output_size);
+			snake_game->play(output);
 			break;
 		}
-		case KEY_A:{
-			snake_game->move(1);
-			break;
-		}
-		case KEY_W:{
-			snake_game->move(2);
-			break;
-		}
-		case KEY_S:{
-			snake_game->move(3);
+		case KEY_SPACE:{
+			pause = !pause;
 			break;
 		}
 		default:
 			break;
 	}
+}
+
+void glTimer(int t){
+	glutPostRedisplay();
+	glutTimerFunc(60, glTimer, 0);
 }
 
 int main(int argc, char *argv[]){
@@ -182,7 +179,7 @@ int main(int argc, char *argv[]){
 
 	glutReshapeFunc(&glWindowRedraw);
 	glutKeyboardFunc(&glWindowKey);
-	glutIdleFunc(&glIdle);
+	glTimer(0);
 	glutMainLoop();
 	
 	delete snake_game;
