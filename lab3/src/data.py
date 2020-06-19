@@ -11,7 +11,7 @@ class SnakeData:
 			snake_start, snake_pos, apple_pos, score = starting_position()
 
 			for _ in range(steps):
-				angle, snake_dir, apple_dir_norm, snake_dir_norm = angle_between(snake_pos, apple_pos)
+				angle, apple_dir_norm, snake_dir_norm = angle_between(snake_pos, apple_pos)
 
 				direc, btn_dir = gen_rnd_dir(snake_pos, angle)
 				curr_dir_vect, front_block, left_block, right_block = block_directions(snake_pos)

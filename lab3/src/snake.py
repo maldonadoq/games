@@ -34,7 +34,7 @@ def angle_between(snake_pos, apple_pos):
 			apple_dir[1] * snake_dir[0] - apple_dir[0] * snake_dir[1],
 			apple_dir[1] * snake_dir[1] + apple_dir[0] * snake_dir[0]
 		) / math.pi
-	return angle, snake_dir, apple_dir, snake_dir
+	return angle, apple_dir, snake_dir
 
 def gen_rnd_dir(snake_pos, angle_between):
 	direc = 0

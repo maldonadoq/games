@@ -132,35 +132,12 @@ bool Snake::isInBody(Point point){
 
 void Snake::getData(Data &input){		
 	Point dir = this->head - this->body[1];
-	Point right = {dir.y, -dir.x};
-	Point left = {-dir.y, dir.x};
 
-	std::cout << "Front: " << isInBody(this->head + dir) << std::endl;
-	std::cout << "Right: " << isInBody(this->head + right) << std::endl;
-	std::cout << "Left : " << isInBody(this->head + left) << std::endl << std::endl;
+	input.front = isInBody(this->head + dir);
+	input.right = isInBody(this->head + Point({dir.y, -dir.x}));
+	input.left  = isInBody(this->head + Point({-dir.y, dir.x}));
 }
 
 Snake::~Snake(){
 	this->body.clear();
 }
-
-
-/* def block_directions(snake_pos):
-	curr_dir_vect = np.array(snake_pos[0]) - np.array(snake_pos[1])
-
-	left_dir_vect = np.array([curr_dir_vect[1], -curr_dir_vect[0]])
-	right_dir_vect = np.array([-curr_dir_vect[1], curr_dir_vect[0]])
-
-	front_block = dir_block(snake_pos, curr_dir_vect)
-	left_block = dir_block(snake_pos, left_dir_vect)
-	right_block = dir_block(snake_pos, right_dir_vect)
-
-	return curr_dir_vect, front_block, left_block, right_block
-	
-def dir_block(snake_pos, curr_dir_vect):
-	next_step = snake_pos[0] + curr_dir_vect
-	snake_start = snake_pos[0]
-	if(collision_with_boundaries(next_step) == 1 or collision_with_self(next_step.tolist(), snake_pos) == 1):
-		return 1
-	else:
-		return 0 */
