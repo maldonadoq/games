@@ -30,6 +30,8 @@ public:
 	void move(int);
 	bool collision(Point);
 	void reset();
+	void play(const vector<int> &);
+
 	vector<float> getData(Point &);
 
 	~Snake();

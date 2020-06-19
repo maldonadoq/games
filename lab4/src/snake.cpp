@@ -61,12 +61,6 @@ bool Snake::collision(Point point){
 	return false;
 }
 
-/*
-pred = model.predict(np.array([	left_block, front_block, right_block,
-											apple_dir_vect_norm[0], snake_dir_vect_norm[0], apple_dir_vect_norm[1],
-											snake_dir_vect_norm[1]]).reshape(-1, 7))
-*/
-
 vector<float> Snake::getData(Point & apple){
 	Point snake_dir = this->head - this->body[1];
 	Point apple_dir = apple - this->head;
@@ -89,6 +83,36 @@ vector<float> Snake::getData(Point & apple){
 	input.push_back(tmpSy);
 
 	return input;
+}
+
+void Snake::play(const vector<int> &vect){
+	int dirP = argmax(vect) - 1;
+	Point new_dir = this->head - this->body[1];	
+
+	if(dirP == 1){
+        // Left
+		this->head.x += -new_dir.y;
+		this->head.y += new_dir.x;
+
+		this->body.push_front(this->head);
+		this->body.pop_back();
+	}
+	else if(dirP == -1){
+		// Right
+		this->head.x += new_dir.y;
+		this->head.y += -new_dir.x;
+
+		this->body.push_front(this->head);
+		this->body.pop_back();
+	}
+	else{
+		// Front
+		this->head.x += new_dir.x;
+		this->head.y += new_dir.y;
+
+		this->body.push_front(this->head);
+		this->body.pop_back();
+	}
 }
 
 Snake::~Snake(){
