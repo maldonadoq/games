@@ -13,7 +13,6 @@ float unit = 10;
 
 Snake *snake;
 Point apple;
-Data input;
 
 void glDrawQuad(Point p){
 	glBegin(GL_QUADS);
@@ -96,7 +95,7 @@ void glTimer(int t){
 	glutTimerFunc(60, glTimer, 0);
 }
 
-// g++ snake.cpp -o snake.out -lGL -lGLU -lglut
+// g++ main.cpp src/snake.cpp src/utils.cpp -o main.out -lGL -lGLU -lglut
 int main(int argc, char *argv[]){
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);

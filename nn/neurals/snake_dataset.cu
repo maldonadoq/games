@@ -90,8 +90,6 @@ SnakeDataset::SnakeDataset(int num_batches, size_t batch_size, string path_x, st
 		batches[i].copyHostToDevice();
 		targets[i].copyHostToDevice();
 	}
-
-	std::cout << batch_size * num_batches << std::endl;
 }
 
 int SnakeDataset::getNumOfBatches(){

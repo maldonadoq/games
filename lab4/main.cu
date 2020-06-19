@@ -18,6 +18,9 @@
 #define input_size 7
 #define output_size 3
 
+NeuralNetwork *nn;
+Matrix *Y;
+
 /* Snake in OpenGL */
 #include <iostream>
 #include <GL/glut.h>
@@ -33,9 +36,10 @@ float size = 500;
 float unit = 10;
 bool death = false;
 
-Snake *snake;
+Snake *snake_game;
 Point apple;
-Data input;
+vector<float> input;
+vector<int> output;
 
 void glDrawQuad(Point p){
 	glBegin(GL_QUADS);
@@ -52,17 +56,24 @@ void glDraw(){
 	glOrtho(0, size, 0, size, -1.0f, 1.0f);
 	
 	if(death){
-		snake->reset();
+		snake_game->reset();
 		death = false;
 	}
 	else{
-		snake->getData(apple, input);
-		//snake->move(0);
+		input = snake_game->getData(apple);
+
+		*Y = nn->forward(Matrix(Shape(1, input_size), input));
+		Y->copyDeviceToHost();
+		output = firstResultInt(*Y, output_size);
+		//printVector(input);
+		printVector(output);
+
+		//snake_game->move(0);
 		glColor3f(0,1,0);
 
-		for(auto point:snake->body){
+		for(auto point:snake_game->body){
 			if((point.x == apple.x) and (point.y == apple.y)){
-				snake->grow(apple);
+				snake_game->grow(apple);
 
 				apple.x = rand() % (int) size/unit;
 				apple.y = rand() % (int) size/unit;				
@@ -84,7 +95,7 @@ void glInit(void) {
 	
 	apple.x = rand() % (int) size/unit;
 	apple.y = rand() % (int) size/unit;
-	snake = new Snake((int) size/unit);
+	snake_game = new Snake((int) size/unit);
 }
 
 void glWindowRedraw(int w, int h){
@@ -105,19 +116,19 @@ void glWindowKey(unsigned char key, int x, int y) {
 			break;
 		}
 		case KEY_D:{
-			snake->move(0);
+			snake_game->move(0);
 			break;
 		}
 		case KEY_A:{
-			snake->move(1);
+			snake_game->move(1);
 			break;
 		}
 		case KEY_W:{
-			snake->move(2);
+			snake_game->move(2);
 			break;
 		}
 		case KEY_S:{
-			snake->move(3);
+			snake_game->move(3);
 			break;
 		}
 		default:
@@ -134,39 +145,33 @@ int main(int argc, char *argv[]){
 		epochs = std::stoi(argv[1]);
 	}
 
-	CCELoss cce_cost;	
-	NeuralNetwork nn;
-	Matrix Y;
+	CCELoss cce_cost;
+	nn = new NeuralNetwork();
+	Y = new Matrix();
 
-	nn.addLayer(new LinearLayer("linear_1", Shape(input_size, 256)));
-	nn.addLayer(new ReLUActivation("relu_1"));
-	nn.addLayer(new LinearLayer("linear_2", Shape(256, output_size)));
-	nn.addLayer(new softmaxActivation("softmax_output"));
+	nn->addLayer(new LinearLayer("linear_1", Shape(input_size, 256)));
+	nn->addLayer(new ReLUActivation("relu_1"));
+	nn->addLayer(new LinearLayer("linear_2", Shape(256, output_size)));
+	nn->addLayer(new softmaxActivation("softmax_output"));
 
-	SnakeDataset snake(num_batches_train, batch_size, "data/trainX.csv", "data/trainY.csv");
+	
+	SnakeDataset snake_train(num_batches_train, batch_size, "data/trainX.csv", "data/trainY.csv");
 	
 	for (epoch = 0; epoch < epochs; epoch++){
 		loss = 0.0;
 		for (batch = 0; batch < num_batches_train; batch++){
-			Y = nn.forward(snake.getBatches().at(batch));
-			nn.backprop(Y, snake.getTargets().at(batch));
-			loss += cce_cost.cost(Y, snake.getTargets().at(batch));
+			*Y = nn->forward(snake_train.getBatches().at(batch));
+			nn->backprop(*Y, snake_train.getTargets().at(batch));
+			loss += cce_cost.cost(*Y, snake_train.getTargets().at(batch));
 		}
 
 		if(epoch % 10 == 0){
-			std::cout << "Epoch: " << epoch << ", Loss: " << loss / snake.getNumOfBatches() << std::endl;
+			std::cout << "Epoch: " << epoch << ", Loss: " << loss / snake_train.getNumOfBatches() << std::endl;
 		}		
 	}
 	std::cout << std::endl;
-		
-	std::vector<int> resInt
-	Y = nn.forward(Matrix(Shape(1, input_size), {0,0,0,0.9818,0.0,0.19,1.0}));
-	Y.copyDeviceToHost();
 
-	resInt = firstResultInt(Y, output_size);
-	printVector(resInt);
-
-	/* glutInit(&argc, argv);
+	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
 	glutInitWindowSize(size, size);
 	glutInitWindowPosition(50, 50);
@@ -178,8 +183,11 @@ int main(int argc, char *argv[]){
 	glutReshapeFunc(&glWindowRedraw);
 	glutKeyboardFunc(&glWindowKey);
 	glutIdleFunc(&glIdle);
-	glutMainLoop(); */
+	glutMainLoop();
 	
-	delete snake;
+	delete snake_game;
+	delete nn;
+	delete Y;
+
 	return 0;
 }
