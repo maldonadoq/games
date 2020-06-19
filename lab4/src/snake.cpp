@@ -52,13 +52,17 @@ void Snake::move(int dir){
 }
 
 bool Snake::collision(Point point){
+	bool self = false;
+	bool wall = (point.x == -1) or (point.x == dim) or (point.y == -1) or (point.y == dim);
+
 	for(auto p: this->body){
 		if((p.x == point.x) and (p.y == point.y)){
-			return true;
+			self = true;
+			break;
 		}
-	}
+	}	
 
-	return false;
+	return (wall or self);
 }
 
 vector<float> Snake::getData(Point & apple){
@@ -85,34 +89,46 @@ vector<float> Snake::getData(Point & apple){
 	return input;
 }
 
-void Snake::play(const vector<int> &vect){
+bool Snake::play(const vector<int> &vect){
 	int dirP = argmax(vect) - 1;
-	Point new_dir = this->head - this->body[1];	
+	Point new_dir = this->head - this->body[1];
+	Point tmp;
 
 	if(dirP == 1){
         // Left
-		this->head.x += -new_dir.y;
-		this->head.y += new_dir.x;
+		tmp = this->head + Point({-new_dir.y, new_dir.x});
 
+		if(collision(tmp))
+			return true;
+
+		this->head = tmp;
 		this->body.push_front(this->head);
 		this->body.pop_back();
 	}
 	else if(dirP == -1){
-		// Right
-		this->head.x += new_dir.y;
-		this->head.y += -new_dir.x;
+		// Right		
+		tmp = this->head + Point({new_dir.y, -new_dir.x});
 
+		if(collision(tmp))
+			return true;
+
+		this->head = tmp;
 		this->body.push_front(this->head);
 		this->body.pop_back();
 	}
 	else{
 		// Front
-		this->head.x += new_dir.x;
-		this->head.y += new_dir.y;
+		tmp = this->head + new_dir;
 
+		if(collision(tmp))
+			return true;
+
+		this->head = tmp;
 		this->body.push_front(this->head);
 		this->body.pop_back();
 	}
+
+	return false;
 }
 
 Snake::~Snake(){

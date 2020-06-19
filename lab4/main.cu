@@ -65,7 +65,7 @@ void glDraw(){
 			*Y = nn->forward(Matrix(Shape(1, input_size), input));
 			Y->copyDeviceToHost();
 			output = firstResultInt(*Y, output_size);
-			snake_game->play(output);
+			death = snake_game->play(output);
 		}
 
 		glColor3f(0,1,0);
@@ -116,7 +116,7 @@ void glWindowKey(unsigned char key, int x, int y) {
 			*Y = nn->forward(Matrix(Shape(1, input_size), input));
 			Y->copyDeviceToHost();
 			output = firstResultInt(*Y, output_size);
-			snake_game->play(output);
+			death = snake_game->play(output);
 			break;
 		}
 		case KEY_SPACE:{
@@ -130,13 +130,15 @@ void glWindowKey(unsigned char key, int x, int y) {
 
 void glTimer(int t){
 	glutPostRedisplay();
-	glutTimerFunc(60, glTimer, 0);
+	glutTimerFunc(40, glTimer, 0);
 }
 
 int main(int argc, char *argv[]){
 	int epochs = 10;
 	int epoch, batch;
 	float loss;
+
+	// srand(time(NULL));
 
 	if(argc == 2){
 		epochs = std::stoi(argv[1]);
