@@ -35,7 +35,7 @@ void glDraw(){
 		death = false;
 	}
 	else{
-		snake->getData(input);
+		snake->getData(apple, input);
 		//snake->move(0);
 		glColor3f(0,1,0);
 

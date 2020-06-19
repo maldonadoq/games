@@ -1,54 +1,15 @@
 #pragma once
 
 #include <deque>
+#include "utils.h"
 
 using std::deque;
-
-struct Point{
-	int x;
-	int y;
-
-	Point operator-(const Point rhs){ 
-		return {x-rhs.x, y-rhs.y};
-	}
-
-	Point operator+(const Point rhs){ 
-		return {x+rhs.x, y+rhs.y};
-	}
-};
-
-std::ostream& operator<<(std::ostream& out, const Point& p){
-	out << "[" << p.x << "," << p.y  << "]";
-	return out;
-}
-
-struct Data{
-	float left;
-	float front;
-	float right;
-	float apple_x;
-	float apple_y;
-	float snake_x;
-	float snake_y;
-};
 
 /*
 Snake direc:
 	0: Right    1: Left
 	2: Up       3: Down
 */
-
-int mod(int x, int m){
-	int t;
-	if(x == -1){
-		t = m-1;
-	}
-	else{
-		t = x % m;
-	}
-
-	return t;
-}
 
 class Snake{
 public:
@@ -61,9 +22,9 @@ public:
 	
 	void grow(Point);
 	void move(int);
-	bool isInBody(Point);
+	bool collision(Point);
 	void reset();
-	void getData(Data &);
+	void getData(Point &, Data &);
 
 	~Snake();
 };
@@ -120,7 +81,7 @@ void Snake::move(int dir){
 	}
 }
 
-bool Snake::isInBody(Point point){
+bool Snake::collision(Point point){
 	for(auto p: this->body){
 		if((p.x == point.x) and (p.y == point.y)){
 			return true;
@@ -130,14 +91,44 @@ bool Snake::isInBody(Point point){
 	return false;
 }
 
-void Snake::getData(Data &input){		
-	Point dir = this->head - this->body[1];
+void Snake::getData(Point & apple, Data &input){		
+	Point snake_dir = this->head - this->body[1];
+	Point apple_dir = apple - this->head;
 
-	input.front = isInBody(this->head + dir);
-	input.right = isInBody(this->head + Point({dir.y, -dir.x}));
-	input.left  = isInBody(this->head + Point({-dir.y, dir.x}));
+	input.front = collision(this->head + snake_dir);
+	input.right = collision(this->head + Point({snake_dir.y, -snake_dir.x}));
+	input.left  = collision(this->head + Point({-snake_dir.y, snake_dir.x}));	
+
+	float tmpX, tmpY;
+
+	direction(snake_dir, tmpX, tmpY);
+	input.snake_x = tmpX;
+	input.snake_y = tmpY;
+
+	direction(apple_dir, tmpX, tmpY);
+	input.apple_x = tmpX;
+	input.apple_y = tmpY;
 }
 
 Snake::~Snake(){
 	this->body.clear();
 }
+
+/* def angle_between(snake_pos, apple_pos):
+	apple_dir = np.array(apple_pos) - np.array(snake_pos[0])
+	snake_dir = np.array(snake_pos[0]) - np.array(snake_pos[1])
+
+	norm_apple_dir = np.linalg.norm(apple_dir)
+	norm_snake_dir = np.linalg.norm(snake_dir)
+	if(norm_apple_dir == 0):
+		norm_apple_dir = 10
+	if(norm_snake_dir == 0):
+		norm_snake_dir = 10
+
+	apple_dir = apple_dir / norm_apple_dir
+	snake_dir = snake_dir / norm_snake_dir
+	angle = math.atan2(
+			apple_dir[1] * snake_dir[0] - apple_dir[0] * snake_dir[1],
+			apple_dir[1] * snake_dir[1] + apple_dir[0] * snake_dir[0]
+		) / math.pi
+	return angle, apple_dir, snake_dir */
