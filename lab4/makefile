@@ -11,6 +11,7 @@ init:
 	$(NVCC) main.cu *.o -o main.out $(LIBS)
 
 update:
+	$(NVCC) -c src/snake.cpp src/utils.cpp
 	$(NVCC) main.cu *.o -o main.out $(LIBS)
 
 clean:

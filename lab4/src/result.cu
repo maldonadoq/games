@@ -29,6 +29,7 @@ std::vector<int> firstResultInt(const Matrix &predictions, int k){
     for(int i=1; i<k; i++){		
 		if(predictions[m*i] > tmp){
 			tmp = predictions[m*i];
+			idx = i;
 		}
 	}
 
