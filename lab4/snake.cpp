@@ -10,7 +10,6 @@
 
 float size = 500;
 float unit = 10;
-bool death = false;
 
 Snake *snake;
 Point apple;
@@ -18,40 +17,32 @@ Data input;
 
 void glDrawQuad(Point p){
 	glBegin(GL_QUADS);
-        glVertex2f((p.x+1)*unit, (p.y+1)*unit);
-        glVertex2f(p.x*unit, (p.y+1)*unit);
+		glVertex2f((p.x+1)*unit, (p.y+1)*unit);
+		glVertex2f(p.x*unit, (p.y+1)*unit);
 		glVertex2f(p.x*unit, p.y*unit);
-        glVertex2f((p.x+1)*unit, p.y*unit);
-    glEnd();
+		glVertex2f((p.x+1)*unit, p.y*unit);
+	glEnd();
 }
 
 void glDraw(){
 	glClear(GL_COLOR_BUFFER_BIT);
 	glLoadIdentity();
 	glOrtho(0, size, 0, size, -1.0f, 1.0f);
-	
-	if(death){
-		snake->reset();
-		death = false;
-	}
-	else{
-		snake->getData(apple, input);
-		//snake->move(0);
-		glColor3f(0,1,0);
+		
+	glColor3f(0,1,0);
 
-		for(auto point:snake->body){
-			if((point.x == apple.x) and (point.y == apple.y)){
-				snake->grow(apple);
+	for(auto point:snake->body){
+		if((point.x == apple.x) and (point.y == apple.y)){
+			snake->grow(apple);
 
-				apple.x = rand() % (int) size/unit;
-				apple.y = rand() % (int) size/unit;				
-			}
-			glDrawQuad(point);
+			apple.x = rand() % (int) size/unit;
+			apple.y = rand() % (int) size/unit;				
 		}
-
-		glColor3f(0,0,1);
-		glDrawQuad(apple);
+		glDrawQuad(point);
 	}
+
+	glColor3f(0,0,1);
+	glDrawQuad(apple);
 
 	glutSwapBuffers();
 }
@@ -71,10 +62,6 @@ void glWindowRedraw(int w, int h){
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(0, size, 0, size, -1.0f, 1.0f);
-}
-
-void glIdle(){
-	glutPostRedisplay();
 }
 
 void glWindowKey(unsigned char key, int x, int y) {
@@ -105,8 +92,8 @@ void glWindowKey(unsigned char key, int x, int y) {
 }
 
 void glTimer(int t){
-    glutPostRedisplay();
-    glutTimerFunc(60, glTimer, 0);
+	glutPostRedisplay();
+	glutTimerFunc(60, glTimer, 0);
 }
 
 // g++ snake.cpp -o snake.out -lGL -lGLU -lglut
@@ -122,8 +109,7 @@ int main(int argc, char *argv[]){
 
 	glutReshapeFunc(&glWindowRedraw);
 	glutKeyboardFunc(&glWindowKey);
-	glutIdleFunc(&glIdle);
-	//glTimer(0);
+	glTimer(0);
 	glutMainLoop();
 
 	delete snake;

@@ -113,22 +113,3 @@ void Snake::getData(Point & apple, Data &input){
 Snake::~Snake(){
 	this->body.clear();
 }
-
-/* def angle_between(snake_pos, apple_pos):
-	apple_dir = np.array(apple_pos) - np.array(snake_pos[0])
-	snake_dir = np.array(snake_pos[0]) - np.array(snake_pos[1])
-
-	norm_apple_dir = np.linalg.norm(apple_dir)
-	norm_snake_dir = np.linalg.norm(snake_dir)
-	if(norm_apple_dir == 0):
-		norm_apple_dir = 10
-	if(norm_snake_dir == 0):
-		norm_snake_dir = 10
-
-	apple_dir = apple_dir / norm_apple_dir
-	snake_dir = snake_dir / norm_snake_dir
-	angle = math.atan2(
-			apple_dir[1] * snake_dir[0] - apple_dir[0] * snake_dir[1],
-			apple_dir[1] * snake_dir[1] + apple_dir[0] * snake_dir[0]
-		) / math.pi
-	return angle, apple_dir, snake_dir */
