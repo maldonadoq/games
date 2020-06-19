@@ -2,6 +2,7 @@
 
 #include <math.h>
 #include <iostream>
+#include <vector>
 
 struct Point{
 	int x;
@@ -13,6 +14,10 @@ struct Point{
 
 	Point operator+(const Point rhs){ 
 		return {x+rhs.x, y+rhs.y};
+	}
+
+	bool operator==(const Point rhs){ 
+		return (x == rhs.x) and (y == rhs.y);
 	}
 };
 
@@ -32,3 +37,4 @@ std::ostream& operator<<(std::ostream& out, const Point&);
 int mod(int, int);
 float norm(Point);
 void direction(Point, float &, float &);
+int argmax(const std::vector<int> &);

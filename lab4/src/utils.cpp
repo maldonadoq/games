@@ -32,3 +32,13 @@ int mod(int x, int m){
 
 	return t;
 }
+
+int argmax(const std::vector<int> & vect){
+	
+	for(int i=0; i<vect.size(); i++){
+		if(vect[i] == 1){
+			return i;
+		}
+	}
+	return 0;
+}
