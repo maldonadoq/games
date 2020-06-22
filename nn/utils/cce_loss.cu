@@ -28,7 +28,7 @@ __global__ void categoricalCrossEntropyCost(float *predictions, float *target,
 	}
 }
 
-float CCELoss::cost(Matrix predictions, Matrix target){
+float CCELoss::cost(Tensor predictions, Tensor target){
 	assert(predictions.shape.x == target.shape.x && predictions.shape.y == target.shape.y);
 
 	float *cost;
@@ -49,7 +49,7 @@ float CCELoss::cost(Matrix predictions, Matrix target){
 	return cost_value;
 }
 
-Matrix CCELoss::dCost(Matrix predictions, Matrix target, Matrix dY){
+Tensor CCELoss::dCost(Tensor predictions, Tensor target, Tensor dY){
 	assert(predictions.shape.x == target.shape.x && predictions.shape.y == target.shape.y);
 
 	dim3 block_size(256);

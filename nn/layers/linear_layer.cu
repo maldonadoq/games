@@ -262,7 +262,7 @@ void LinearLayer::initializeBiasWithZeros() {
 	initializeBiasKernel<<<gridDim, blockDim>>>(b.data_device.get(), b.shape.x * b.shape.y);
 }
 
-Matrix &LinearLayer::forward(Matrix &A) {
+Tensor &LinearLayer::forward(Tensor &A) {
 	assert(W.shape.x == A.shape.y);
 
 	this->A = A;
@@ -275,7 +275,7 @@ Matrix &LinearLayer::forward(Matrix &A) {
 	return Z;
 }
 
-void LinearLayer::computeAndStoreLayerOutput(Matrix &A) {
+void LinearLayer::computeAndStoreLayerOutput(Tensor &A) {
 	dim3 block_size(TILE_WIDTH, TILE_WIDTH);
 	dim3 num_of_blocks((Z.shape.x + block_size.x - 1) / block_size.x,
 					   (Z.shape.y + block_size.y - 1) / block_size.y);
@@ -292,7 +292,7 @@ void LinearLayer::computeAndStoreLayerOutput(Matrix &A) {
 										   Z.shape.x, Z.shape.y);
 }
 
-Matrix &LinearLayer::backprop(Matrix &dZ, float learning_rate) {
+Tensor &LinearLayer::backprop(Tensor &dZ, float learning_rate) {
 	dA.allocateMemoryIfNotAllocated(A.shape);
 	WT.allocateMemoryIfNotAllocated(Shape(W.shape.y, W.shape.x));
 	AT.allocateMemoryIfNotAllocated(Shape(A.shape.y, A.shape.x));
@@ -309,7 +309,7 @@ Matrix &LinearLayer::backprop(Matrix &dZ, float learning_rate) {
 	return dA;
 }
 
-void LinearLayer::computeAndStoreBackpropError(Matrix &dZ) {
+void LinearLayer::computeAndStoreBackpropError(Tensor &dZ) {
 	dim3 block_size(TILE_WIDTH, TILE_WIDTH);
 	dim3 num_of_blocks((A.shape.x + block_size.x - 1) / block_size.x,
 					   (A.shape.y + block_size.y - 1) / block_size.y);
@@ -327,7 +327,7 @@ void LinearLayer::computeAndStoreBackpropError(Matrix &dZ) {
 												  dA.shape.y, dA.shape.x);
 }
 
-void LinearLayer::updateWeights(Matrix &dZ, float learning_rate) {
+void LinearLayer::updateWeights(Tensor &dZ, float learning_rate) {
 	dim3 block_size(TILE_WIDTH, TILE_WIDTH);
 	dim3 num_of_blocks((W.shape.x + block_size.x - 1) / block_size.x,
 					   (W.shape.y + block_size.y - 1) / block_size.y);
@@ -346,7 +346,7 @@ void LinearLayer::updateWeights(Matrix &dZ, float learning_rate) {
 															   learning_rate);
 }
 
-void LinearLayer::updateBias(Matrix &dZ, float learning_rate) {
+void LinearLayer::updateBias(Tensor &dZ, float learning_rate) {
 	dim3 block_size(std::min(256, int(dZ.shape.x)));
 	dim3 num_of_blocks(dZ.shape.y);
 	updateBiasKernel<<<num_of_blocks, block_size, sizeof(float) * block_size.x>>>(dZ.data_device.get(), b.data_device.get(), dZ.shape.x, dZ.shape.y, learning_rate);
@@ -360,10 +360,10 @@ int LinearLayer::getYDim() const {
 	return W.shape.y;
 }
 
-Matrix LinearLayer::getWeightsMatrix() const {
+Tensor LinearLayer::getWeightsMatrix() const {
 	return W;
 }
 
-Matrix LinearLayer::getBiasVector() const {
+Tensor LinearLayer::getBiasVector() const {
 	return b;
 }

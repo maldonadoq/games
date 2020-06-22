@@ -1,13 +1,13 @@
-#include "matrix.cuh"
+#include "tensor.cuh"
 
-Matrix::Matrix(size_t x_dim, size_t y_dim) : shape(x_dim, y_dim), data_device(nullptr), data_host(nullptr),
+Tensor::Tensor(size_t x_dim, size_t y_dim) : shape(x_dim, y_dim), data_device(nullptr), data_host(nullptr),
 											 device_allocated(false), host_allocated(false){
 }
 
-Matrix::Matrix(Shape shape) : Matrix(shape.x, shape.y){
+Tensor::Tensor(Shape shape) : Tensor(shape.x, shape.y){
 }
 
-Matrix::Matrix(Shape shape, std::vector<float> input) : Matrix(shape.x, shape.y){
+Tensor::Tensor(Shape shape, std::vector<float> input) : Tensor(shape.x, shape.y){
 	allocateMemory();
 	for(int i=0; i<input.size(); i++){
 		data_host.get()[i] = input[i];
@@ -15,7 +15,7 @@ Matrix::Matrix(Shape shape, std::vector<float> input) : Matrix(shape.x, shape.y)
 	copyHostToDevice();
 }
 
-void Matrix::allocateCudaMemory(){
+void Tensor::allocateCudaMemory(){
 	if (!device_allocated){
 		float *device_memory = nullptr;
 		cudaMalloc(&device_memory, shape.x * shape.y * sizeof(float));
@@ -26,7 +26,7 @@ void Matrix::allocateCudaMemory(){
 	}
 }
 
-void Matrix::allocateHostMemory(){
+void Tensor::allocateHostMemory(){
 	if (!host_allocated){
 		data_host = std::shared_ptr<float>(new float[shape.x * shape.y],
 										   [&](float *ptr) { delete[] ptr; });
@@ -34,19 +34,19 @@ void Matrix::allocateHostMemory(){
 	}
 }
 
-void Matrix::allocateMemory(){
+void Tensor::allocateMemory(){
 	allocateCudaMemory();
 	allocateHostMemory();
 }
 
-void Matrix::allocateMemoryIfNotAllocated(Shape shape){
+void Tensor::allocateMemoryIfNotAllocated(Shape shape){
 	if (!device_allocated && !host_allocated){
 		this->shape = shape;
 		allocateMemory();
 	}
 }
 
-void Matrix::copyHostToDevice(){
+void Tensor::copyHostToDevice(){
 	if (device_allocated && host_allocated){
 		cudaMemcpy(data_device.get(), data_host.get(), shape.x * shape.y * sizeof(float), cudaMemcpyHostToDevice);
 		NNException::throwIfDeviceErrorsOccurred("Cannot copy host data to CUDA device.");
@@ -56,7 +56,7 @@ void Matrix::copyHostToDevice(){
 	}
 }
 
-void Matrix::copyDeviceToHost(){
+void Tensor::copyDeviceToHost(){
 	if (device_allocated && host_allocated){
 		cudaMemcpy(data_host.get(), data_device.get(), shape.x * shape.y * sizeof(float), cudaMemcpyDeviceToHost);
 		NNException::throwIfDeviceErrorsOccurred("Cannot copy device data to host.");
@@ -66,10 +66,10 @@ void Matrix::copyDeviceToHost(){
 	}
 }
 
-float &Matrix::operator[](const int index){
+float &Tensor::operator[](const int index){
 	return data_host.get()[index];
 }
 
-const float &Matrix::operator[](const int index) const{
+const float &Tensor::operator[](const int index) const{
 	return data_host.get()[index];
 }

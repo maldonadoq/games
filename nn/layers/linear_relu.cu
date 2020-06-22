@@ -215,7 +215,7 @@ void LinearReluLayer::initializeBiasWithZeros_Relu() {
 	initializeBiasKernel_relu<<<gridDim, blockDim>>>(b.data_device.get(), b.shape.x * b.shape.y);
 }
 
-Matrix &LinearReluLayer::forward(Matrix &A) {
+Tensor &LinearReluLayer::forward(Tensor &A) {
 	assert(W.shape.x == A.shape.y);
 
 	this->A = A;
@@ -230,7 +230,7 @@ Matrix &LinearReluLayer::forward(Matrix &A) {
 	return Z;
 }
 
-void LinearReluLayer::computeAndStoreLayerOutput_Relu(Matrix &A) {
+void LinearReluLayer::computeAndStoreLayerOutput_Relu(Tensor &A) {
 	dim3 block_size(TILE_WIDTH, TILE_WIDTH);
 	dim3 num_of_blocks((Z.shape.x + block_size.x - 1) / block_size.x,
 					   (Z.shape.y + block_size.y - 1) / block_size.y);
@@ -253,7 +253,7 @@ __global__ void ReluBackKernel(float *Z, float *dZ, int size) {
 	}
 }
 
-Matrix &LinearReluLayer::backprop(Matrix &dZ, float learning_rate) {
+Tensor &LinearReluLayer::backprop(Tensor &dZ, float learning_rate) {
 	dA.allocateMemoryIfNotAllocated(A.shape);
 	WT.allocateMemoryIfNotAllocated(Shape(W.shape.y, W.shape.x));
 	AT.allocateMemoryIfNotAllocated(Shape(A.shape.y, A.shape.x));
@@ -273,13 +273,13 @@ Matrix &LinearReluLayer::backprop(Matrix &dZ, float learning_rate) {
 	return dA;
 }
 
-void LinearReluLayer::ReluBackProp(Matrix &dZ) {
+void LinearReluLayer::ReluBackProp(Tensor &dZ) {
 	dim3 block_size(256);
 	dim3 num_of_block((Z.shape.x * Z.shape.y + block_size.x - 1) / block_size.x);
 	ReluBackKernel<<<num_of_block, block_size>>>(Z.data_device.get(), dZ.data_device.get(), dZ.shape.x * dZ.shape.y);
 }
 
-void LinearReluLayer::computeAndStoreBackpropError_Relu(Matrix &dZ) {
+void LinearReluLayer::computeAndStoreBackpropError_Relu(Tensor &dZ) {
 	dim3 block_size(TILE_WIDTH, TILE_WIDTH);
 	dim3 num_of_blocks((A.shape.x + block_size.x - 1) / block_size.x,
 					   (A.shape.y + block_size.y - 1) / block_size.y);
@@ -297,7 +297,7 @@ void LinearReluLayer::computeAndStoreBackpropError_Relu(Matrix &dZ) {
 															  dA.shape.y, dA.shape.x);
 }
 
-void LinearReluLayer::updateWeights_Relu(Matrix &dZ, float learning_rate) {
+void LinearReluLayer::updateWeights_Relu(Tensor &dZ, float learning_rate) {
 	dim3 block_size(TILE_WIDTH, TILE_WIDTH);
 	dim3 num_of_blocks((W.shape.x + block_size.x - 1) / block_size.x,
 					   (W.shape.y + block_size.y - 1) / block_size.y);
@@ -316,7 +316,7 @@ void LinearReluLayer::updateWeights_Relu(Matrix &dZ, float learning_rate) {
 																	learning_rate);
 }
 
-void LinearReluLayer::updateBias_Relu(Matrix &dZ, float learning_rate) {
+void LinearReluLayer::updateBias_Relu(Tensor &dZ, float learning_rate) {
 	dim3 block_size(std::min(256, int(dZ.shape.x)));
 	dim3 num_of_blocks(dZ.shape.y);
 	updateBiasKernel_relu<<<num_of_blocks, block_size, sizeof(float) * block_size.x>>>(dZ.data_device.get(), b.data_device.get(), dZ.shape.x, dZ.shape.y, learning_rate);
@@ -330,10 +330,10 @@ int LinearReluLayer::getYDim() const {
 	return W.shape.y;
 }
 
-Matrix LinearReluLayer::getWeightsMatrix() const {
+Tensor LinearReluLayer::getWeightsMatrix() const {
 	return W;
 }
 
-Matrix LinearReluLayer::getBiasVector() const {
+Tensor LinearReluLayer::getBiasVector() const {
 	return b;
 }

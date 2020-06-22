@@ -31,7 +31,7 @@ ReLUActivation::ReLUActivation(std::string name) {
 
 ReLUActivation::~ReLUActivation() {}
 
-Matrix &ReLUActivation::forward(Matrix &Z) {
+Tensor &ReLUActivation::forward(Tensor &Z) {
 	this->Z = Z;
 	A.allocateMemoryIfNotAllocated(Z.shape);
 
@@ -45,7 +45,7 @@ Matrix &ReLUActivation::forward(Matrix &Z) {
 	return A;
 }
 
-Matrix &ReLUActivation::backprop(Matrix &dA, float learning_rate) {
+Tensor &ReLUActivation::backprop(Tensor &dA, float learning_rate) {
 	dZ.allocateMemoryIfNotAllocated(Z.shape);
 
 	dim3 block_size(256);

@@ -18,7 +18,7 @@
 #define output_size 3
 
 int main(int argc, char *argv[]){
-	Matrix Y;
+	Tensor Y;
 
 	int epochs = 5;
 	int epoch, batch;

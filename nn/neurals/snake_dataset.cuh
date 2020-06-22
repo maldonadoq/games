@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../utils/matrix.cuh"
+#include "../utils/tensor.cuh"
 #include <fstream>
 #include <iostream>
 #include <algorithm>
@@ -18,17 +18,17 @@ private:
 	float **inputs;
 	float **labels;
 
-	std::vector<Matrix> batches;
-	std::vector<Matrix> targets;
+	std::vector<Tensor> batches;
+	std::vector<Tensor> targets;
 
 public:
 	SnakeDataset(int num_batches, size_t batch_size, string path_x, string path_y);
 
 	int getNumOfBatches();
 	int getSize();
-	std::vector<Matrix> &getBatches();
-	std::vector<Matrix> &getTargets();
+	std::vector<Tensor> &getBatches();
+	std::vector<Tensor> &getTargets();
 };
 
 
-int computeAccuracy(const Matrix &, const Matrix &, int);
+int computeAccuracy(const Tensor &, const Tensor &, int);

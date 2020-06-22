@@ -82,7 +82,7 @@ __global__ void g_getSoftMaxP(float *softMaxP, float *b, int cols, int row){
 	}
 }
 
-Matrix &softmaxActivation::forward(Matrix &Z){
+Tensor &softmaxActivation::forward(Tensor &Z){
 	this->Z = Z;
 	A.allocateMemoryIfNotAllocated(Z.shape);
 	dim3 block = A.shape.x;
@@ -105,7 +105,7 @@ __global__ void softmaxActivationBackprop(float *Z, float *dA, float *dZ,
 	}
 }
 
-Matrix &softmaxActivation::backprop(Matrix &dA, float learning_rate){
+Tensor &softmaxActivation::backprop(Tensor &dA, float learning_rate){
 	dZ.allocateMemoryIfNotAllocated(Z.shape);
 	dim3 block_size(256);
 	dim3 num_of_blocks((Z.shape.y * Z.shape.x + block_size.x - 1) / block_size.x);

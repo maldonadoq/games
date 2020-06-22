@@ -5,7 +5,7 @@
 #include <vector>
 #include <memory>
 
-class Matrix {
+class Tensor {
 private:
 	bool device_allocated;
 	bool host_allocated;
@@ -19,9 +19,9 @@ public:
 	std::shared_ptr<float> data_device;
 	std::shared_ptr<float> data_host;
 
-	Matrix(size_t x_dim = 1, size_t y_dim = 1);
-	Matrix(Shape shape);
-	Matrix(Shape shape, std::vector<float>);
+	Tensor(size_t x_dim = 1, size_t y_dim = 1);
+	Tensor(Shape shape);
+	Tensor(Shape shape, std::vector<float>);
 
 	void allocateMemory();
 	void allocateMemoryIfNotAllocated(Shape shape);

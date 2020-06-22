@@ -1,6 +1,6 @@
 #include "result.cuh"
 
-void printMatrix(const Matrix& m){
+void printMatrix(const Tensor& m){
 	for(int i = 0 ; i < m.shape.x ; i++){
 		for(int j = 0 ; j < m.shape.y ; j++)
 			std::cout << m[j * m.shape.x + i] << " ";
@@ -8,7 +8,7 @@ void printMatrix(const Matrix& m){
 	}
 }
 
-std::vector<float> firstResultFloat(const Matrix &predictions, int k){
+std::vector<float> firstResultFloat(const Tensor &predictions, int k){
 	int m = predictions.shape.x;
 	std::vector<float> res;
 
@@ -19,7 +19,7 @@ std::vector<float> firstResultFloat(const Matrix &predictions, int k){
 	return res;
 }
 
-std::vector<int> firstResultInt(const Matrix &predictions, int k){
+std::vector<int> firstResultInt(const Tensor &predictions, int k){
 	int m = predictions.shape.x;
 	std::vector<int> res(k, 0);
 

@@ -10,16 +10,16 @@ private:
 	std::vector<NNLayer*> layers;
 	CCELoss cce_cost;
 
-	Matrix Y;
-	Matrix dY;
+	Tensor Y;
+	Tensor dY;
 	float learning_rate;
 
 public:
 	NeuralNetwork(float learning_rate = 0.01);
 	~NeuralNetwork();
 
-	Matrix forward(Matrix X);
-	void backprop(Matrix predictions, Matrix target);
+	Tensor forward(Tensor X);
+	void backprop(Tensor predictions, Tensor target);
 
 	void addLayer(NNLayer *layer);
 	std::vector<NNLayer*> getLayers() const;

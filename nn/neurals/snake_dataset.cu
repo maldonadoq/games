@@ -70,8 +70,8 @@ SnakeDataset::SnakeDataset(int num_batches, size_t batch_size, string path_x, st
 	file.close();
 
 	for (int i = 0; i < num_batches; i++){
-		batches.push_back(Matrix(Shape(batch_size, input_size)));
-		targets.push_back(Matrix(Shape(batch_size, output_size)));
+		batches.push_back(Tensor(Shape(batch_size, input_size)));
+		targets.push_back(Tensor(Shape(batch_size, output_size)));
 
 		batches[i].allocateMemory();
 		targets[i].allocateMemory();
@@ -96,17 +96,17 @@ int SnakeDataset::getNumOfBatches(){
 	return num_batches;
 }
 
-std::vector<Matrix> &SnakeDataset::getBatches(){
+std::vector<Tensor> &SnakeDataset::getBatches(){
 	return batches;
 }
 
-std::vector<Matrix> &SnakeDataset::getTargets(){
+std::vector<Tensor> &SnakeDataset::getTargets(){
 	return targets;
 }
 
 // ----------------------------------------------
 
-int computeAccuracy(const Matrix &predictions, const Matrix &targets, int k){
+int computeAccuracy(const Tensor &predictions, const Tensor &targets, int k){
 	int m = predictions.shape.x;
 	int correct_predictions = 0;
 

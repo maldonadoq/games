@@ -19,7 +19,7 @@
 #define output_size 3
 
 NeuralNetwork *nn;
-Matrix *Y;
+Tensor *Y;
 
 /* Snake in OpenGL */
 #include <iostream>
@@ -62,7 +62,7 @@ void glDraw(){
 
 		if(!pause){
 			input = snake_game->getData(apple);
-			*Y = nn->forward(Matrix(Shape(1, input_size), input));
+			*Y = nn->forward(Tensor(Shape(1, input_size), input));
 			Y->copyDeviceToHost();
 			output = firstResultInt(*Y, output_size);
 			death = snake_game->play(output);
@@ -113,7 +113,7 @@ void glWindowKey(unsigned char key, int x, int y) {
 		}
 		case KEY_R:{
 			input = snake_game->getData(apple);
-			*Y = nn->forward(Matrix(Shape(1, input_size), input));
+			*Y = nn->forward(Tensor(Shape(1, input_size), input));
 			Y->copyDeviceToHost();
 			output = firstResultInt(*Y, output_size);
 			death = snake_game->play(output);
@@ -146,7 +146,7 @@ int main(int argc, char *argv[]){
 
 	CCELoss cce_cost;
 	nn = new NeuralNetwork();
-	Y = new Matrix();
+	Y = new Tensor();
 
 	nn->addLayer(new LinearLayer("linear_1", Shape(input_size, 256)));
 	nn->addLayer(new ReLUActivation("relu_1"));

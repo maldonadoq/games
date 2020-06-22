@@ -14,8 +14,8 @@ void NeuralNetwork::addLayer(NNLayer* layer) {
 	this->layers.push_back(layer);
 }
 
-Matrix NeuralNetwork::forward(Matrix X) {
-	Matrix Z = X;
+Tensor NeuralNetwork::forward(Tensor X) {
+	Tensor Z = X;
 
 	for (auto layer : layers) {
 		Z = layer->forward(Z);
@@ -25,10 +25,10 @@ Matrix NeuralNetwork::forward(Matrix X) {
 	return Y;
 }
 
-void NeuralNetwork::backprop(Matrix predictions, Matrix target) {
+void NeuralNetwork::backprop(Tensor predictions, Tensor target) {
 	dY.allocateMemoryIfNotAllocated(predictions.shape);
 
-	Matrix error = cce_cost.dCost(predictions, target, dY);
+	Tensor error = cce_cost.dCost(predictions, target, dY);
 
 	for (auto it = this->layers.rbegin(); it != this->layers.rend(); it++) {
 		error = (*it)->backprop(error, learning_rate);

@@ -208,7 +208,7 @@ void LinearSoftmaxLayer::initializeBiasWithZeros_softmax() {
 	initializeBiasKernel_softmax<<<gridDim, blockDim>>>(b.data_device.get(), b.shape.x * b.shape.y);
 }
 
-Matrix &LinearSoftmaxLayer::forward(Matrix &A) {
+Tensor &LinearSoftmaxLayer::forward(Tensor &A) {
 	assert(W.shape.x == A.shape.y);
 
 	this->A = A;
@@ -245,7 +245,7 @@ __global__ void softmax_linear(float *softmaxP, float *b, int rows, int cols) {
 	}
 }
 
-void LinearSoftmaxLayer::computeAndStoreLayerOutput_softmax(Matrix &A) {
+void LinearSoftmaxLayer::computeAndStoreLayerOutput_softmax(Tensor &A) {
 	dim3 block_size(TILE_WIDTH, TILE_WIDTH);
 	dim3 num_of_blocks((Z.shape.x + block_size.x - 1) / block_size.x,
 					   (Z.shape.y + block_size.y - 1) / block_size.y);
@@ -263,7 +263,7 @@ void LinearSoftmaxLayer::computeAndStoreLayerOutput_softmax(Matrix &A) {
 	softmax_linear<<<block, threads, Z.shape.y * sizeof(float)>>>(Z.data_device.get(), T.data_device.get(), Z.shape.y, Z.shape.x);
 }
 
-Matrix &LinearSoftmaxLayer::backprop(Matrix &dZ, float learning_rate) {
+Tensor &LinearSoftmaxLayer::backprop(Tensor &dZ, float learning_rate) {
 	dA.allocateMemoryIfNotAllocated(A.shape);
 	WT.allocateMemoryIfNotAllocated(Shape(W.shape.y, W.shape.x));
 	AT.allocateMemoryIfNotAllocated(Shape(A.shape.y, A.shape.x));
@@ -280,7 +280,7 @@ Matrix &LinearSoftmaxLayer::backprop(Matrix &dZ, float learning_rate) {
 	return dA;
 }
 
-void LinearSoftmaxLayer::computeAndStoreBackpropError_softmax(Matrix &dZ) {
+void LinearSoftmaxLayer::computeAndStoreBackpropError_softmax(Tensor &dZ) {
 	dim3 block_size(TILE_WIDTH, TILE_WIDTH);
 	dim3 num_of_blocks((A.shape.x + block_size.x - 1) / block_size.x,
 					   (A.shape.y + block_size.y - 1) / block_size.y);
@@ -298,7 +298,7 @@ void LinearSoftmaxLayer::computeAndStoreBackpropError_softmax(Matrix &dZ) {
 																 dA.shape.y, dA.shape.x);
 }
 
-void LinearSoftmaxLayer::updateWeights_softmax(Matrix &dZ, float learning_rate) {
+void LinearSoftmaxLayer::updateWeights_softmax(Tensor &dZ, float learning_rate) {
 	dim3 block_size(TILE_WIDTH, TILE_WIDTH);
 	dim3 num_of_blocks((W.shape.x + block_size.x - 1) / block_size.x,
 					   (W.shape.y + block_size.y - 1) / block_size.y);
@@ -317,7 +317,7 @@ void LinearSoftmaxLayer::updateWeights_softmax(Matrix &dZ, float learning_rate) 
 																	   learning_rate);
 }
 
-void LinearSoftmaxLayer::updateBias_softmax(Matrix &dZ, float learning_rate) {
+void LinearSoftmaxLayer::updateBias_softmax(Tensor &dZ, float learning_rate) {
 	dim3 block_size(std::min(256, int(dZ.shape.x)));
 	dim3 num_of_blocks(dZ.shape.y);
 	updateBiasKernel_softmax<<<num_of_blocks, block_size, sizeof(float) * block_size.x>>>(dZ.data_device.get(), b.data_device.get(), dZ.shape.x, dZ.shape.y, learning_rate);
@@ -331,10 +331,10 @@ int LinearSoftmaxLayer::getYDim() const {
 	return W.shape.y;
 }
 
-Matrix LinearSoftmaxLayer::getWeightsMatrix() const {
+Tensor LinearSoftmaxLayer::getWeightsMatrix() const {
 	return W;
 }
 
-Matrix LinearSoftmaxLayer::getBiasVector() const {
+Tensor LinearSoftmaxLayer::getBiasVector() const {
 	return b;
 }
