@@ -148,10 +148,12 @@ int main(int argc, char *argv[]){
 	nn = new NeuralNetwork();
 	Y = new Tensor();
 
-	nn->addLayer(new LinearLayer("linear_1", Shape(input_size, 256)));
-	nn->addLayer(new ReLUActivation("relu_1"));
-	nn->addLayer(new LinearLayer("linear_2", Shape(256, output_size)));
-	nn->addLayer(new softmaxActivation("softmax_output"));
+	nn->addLayer(new LinearLayer("Linear_1", Shape(input_size, 256)));
+	nn->addLayer(new ReLUActivation("Relu_1"));
+	nn->addLayer(new LinearLayer("Linear_2", Shape(256, output_size)));
+	nn->addLayer(new softmaxActivation("Softmax"));
+
+	nn->summary();
 
 	
 	SnakeDataset snake_train(num_batches_train, batch_size, "data/trainX.csv", "data/trainY.csv");

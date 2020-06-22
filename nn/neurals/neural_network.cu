@@ -1,5 +1,15 @@
 #include "neural_network.cuh"
 
+void printTensor(const Tensor& m){
+	cout << cout.precision();
+
+	for(int i = 0 ; i < m.shape.x ; i++){
+		for(int j = 0 ; j < m.shape.y ; j++)
+			cout << m[j * m.shape.x + i] << " ";
+		cout << endl;
+	}
+}
+
 NeuralNetwork::NeuralNetwork(float learning_rate) :
 	learning_rate(learning_rate)
 { }
@@ -37,6 +47,14 @@ void NeuralNetwork::backprop(Tensor predictions, Tensor target) {
 	cudaDeviceSynchronize();
 }
 
-std::vector<NNLayer*> NeuralNetwork::getLayers() const {
+void NeuralNetwork::summary(){
+	for (auto it = this->layers.begin(); it != this->layers.end(); it++) {
+		cout << "Layer: " << (*it)->getName() << endl;
+		cout << "---------------------" <<endl;
+	}
+	cout <<endl;
+}																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																															
+
+vector<NNLayer*> NeuralNetwork::getLayers() const {
 	return layers;
 }

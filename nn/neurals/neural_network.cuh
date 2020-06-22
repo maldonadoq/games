@@ -5,9 +5,14 @@
 #include "../utils/cce_loss.cuh"
 #include "../utils/exception.cuh"
 
+using std::string;
+using std::vector;
+using std::cout;
+using std::endl;
+
 class NeuralNetwork {
 private:
-	std::vector<NNLayer*> layers;
+	vector<NNLayer*> layers;
 	CCELoss cce_cost;
 
 	Tensor Y;
@@ -18,10 +23,14 @@ public:
 	NeuralNetwork(float learning_rate = 0.01);
 	~NeuralNetwork();
 
-	Tensor forward(Tensor X);
-	void backprop(Tensor predictions, Tensor target);
+	Tensor forward(Tensor);
+	void backprop(Tensor, Tensor);
 
-	void addLayer(NNLayer *layer);
+	void addLayer(NNLayer *);
 	std::vector<NNLayer*> getLayers() const;
 
+	bool save(string);
+	bool load(string);
+
+	void summary();
 };

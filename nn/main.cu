@@ -10,9 +10,9 @@
 #include "neurals/snake_dataset.cuh"
 #include "utils/cce_loss.cuh"
 
-#define num_batches_train 3000
-#define num_batches_test 150
-#define batch_size 256
+#define num_batches_train 100
+#define num_batches_test 10
+#define batch_size 10
 
 #define input_size 7
 #define output_size 3
@@ -31,12 +31,14 @@ int main(int argc, char *argv[]){
 	CCELoss cce_cost;
 	NeuralNetwork nn;
 
-	nn.addLayer(new LinearLayer("linear_1", Shape(input_size, 256)));
-	nn.addLayer(new ReLUActivation("relu_1"));
-	nn.addLayer(new LinearLayer("linear_2", Shape(256, output_size)));
-	nn.addLayer(new softmaxActivation("softmax_output"));
+	nn.addLayer(new LinearLayer("Linear_1", Shape(input_size, 256)));
+	nn.addLayer(new ReLUActivation("Relu_1"));
+	nn.addLayer(new LinearLayer("Linear_2", Shape(256, output_size)));
+	nn.addLayer(new softmaxActivation("Softmax"));
 
-	SnakeDataset snake(num_batches_train, batch_size, "data/trainX.csv", "data/trainY.csv");
+	nn.summary();
+
+	SnakeDataset snake(num_batches_train, batch_size, "data/testX.csv", "data/testY.csv");
 	
 	for (epoch = 0; epoch < epochs; epoch++){
 		loss = 0.0;
