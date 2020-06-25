@@ -1,11 +1,16 @@
 # Neural Network
 Neural Network [Perceptron Multilayer in Cuda]
 
+[Content](#neural-network)
 - [Code](#code)
 - [How to run](#how-to-run)
 - [Images](#images)
 
 ## Code
+
+### Inspired by
+- [Cuda Neural Network](http://luniak.io/cuda-neural-network-implementation-part-1/)
+- [Snake Game Keras](https://theailearner.com/2018/04/19/snake-game-with-deep-learning/)
 
 ### Main
 
@@ -94,7 +99,7 @@ public:
 ```bash
 $ cd folder name
 $ make
-$ ./main.out epochs # 101
+$ ./main.out epochs # 71
 ```
 
 ## Images
