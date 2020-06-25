@@ -17,20 +17,15 @@ $ ./main.out 71
 ```
 
 ## Images
-<center>
-  <table>
-    <tr>
-      <td><img src="https://github.com/maldonadoq/games/blob/master/lab4/img/1.png" width="300"></td>
-      <td><img src="https://github.com/maldonadoq/games/blob/master/lab4/img/2.png" width="300"></td>
-    </tr>
-  </table>
-</center>
 
-<center>
-  <table>
-    <tr>
-      <td><img src="https://github.com/maldonadoq/games/blob/master/lab4/img/3.png" width="300"></td>
-      <td><img src="https://github.com/maldonadoq/games/blob/master/lab4/img/4.png" width="300"></td>
-    </tr>
-  </table>
-</center>
+<table>
+  <tr>
+    <td><img src="https://github.com/maldonadoq/games/blob/master/lab4/img/1.png" width="300"></td>
+    <td><img src="https://github.com/maldonadoq/games/blob/master/lab4/img/2.png" width="300"></td>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/maldonadoq/games/blob/master/lab4/img/3.png" width="300"></td>
+    <td><img src="https://github.com/maldonadoq/games/blob/master/lab4/img/4.png" width="300"></td>
+  </tr>
+</table>
+
