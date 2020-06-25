@@ -9,8 +9,28 @@ Neural Network [Perceptron Multilayer in Cuda]
 ## Code
 
 ### Inspired by
-- [Cuda Neural Network](http://luniak.io/cuda-neural-network-implementation-part-1/)
-- [Snake Game Keras](https://theailearner.com/2018/04/19/snake-game-with-deep-learning/)
+- [Cuda Neural Network](http://luniak.io/cuda-neural-network-implementation-part-1/), [Snake Game Keras](https://theailearner.com/2018/04/19/snake-game-with-deep-learning/)
+
+### Neural Network
+
+```c++
+class NeuralNetwork {
+private:
+    vector<NNLayer*> layers;
+    CCELoss cce_cost;
+public:
+    NeuralNetwork(float learning_rate = 0.01);
+    ~NeuralNetwork();
+
+    Tensor forward(Tensor);
+    void backprop(Tensor, Tensor);
+
+    void addLayer(NNLayer *);
+    std::vector<NNLayer*> getLayers() const;
+
+    void summary();
+};
+```
 
 ### Main
 
@@ -42,56 +62,6 @@ for (epoch = 0; epoch < epochs; epoch++){
         loss += cce_cost.cost(Y, snake.getTargets().at(batch));
     }
 }
-```
-
-### Testing
-
-```c++
-SnakeDataset snake_test(num_batches_test, batch_size, "data/testX.csv", "data/testY.csv");
-correct = 0;
-
-for (batch = 0; batch < num_batches_test; batch++){
-    Y = nn.forward(snake_test.getBatches().at(batch));
-    Y.copyDeviceToHost();
-    correct += computeAccuracy(Y, snake_test.getTargets().at(batch), output_size);
-}
-```
-
-### Neural Network
-
-```c++
-class NeuralNetwork {
-private:
-	vector<NNLayer*> layers;
-	CCELoss cce_cost;
-public:
-	NeuralNetwork(float learning_rate = 0.01);
-	~NeuralNetwork();
-
-	Tensor forward(Tensor);
-	void backprop(Tensor, Tensor);
-
-	void addLayer(NNLayer *);
-	std::vector<NNLayer*> getLayers() const;
-
-	void summary();
-};
-```
-
-### Dataset
-
-```c++
-class SnakeDataset{
-private:
-    std::vector<Tensor> batches;
-    std::vector<Tensor> targets;
-
-public:
-    SnakeDataset(int, size_t, string, string);
-
-    std::vector<Tensor> &getBatches();
-    std::vector<Tensor> &getTargets();
-};
 ```
 
 ## How to run
