@@ -2,7 +2,7 @@
 Neural Network [Perceptron Multilayer in Cuda]
 
 - [Code](#code)
-- [How to run](#how_to_run)
+- [How to run](#how-to-run)
 - [Images](#images)
 
 ## Code
