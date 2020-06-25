@@ -170,7 +170,6 @@ int main(int argc, char *argv[]){
 			std::cout << "Epoch: " << epoch << ", Loss: " << loss / snake_train.getNumOfBatches() << std::endl;
 		}		
 	}
-	std::cout << std::endl;
 
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
