@@ -270,16 +270,6 @@ void generate_training_data(vector<vector<float>>& training_data_x, vector<vecto
 }
 
 template<class T>
-void printMatrix(vector<vector<T>> vec){
-    for(unsigned i=0; i<vec.size(); i++){
-        for(unsigned j=0; j<vec[0].size(); j++){
-            cout << vec[i][j] << " ";
-        }
-        cout << endl;
-    }
-}
-
-template<class T>
 void saveCsv(string filename, vector<vector<T>> vec){
     ofstream tfile;
     string tmp;
