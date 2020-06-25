@@ -1,6 +1,10 @@
 # Neural Network
 Neural Network [Perceptron Multilayer in Cuda]
 
+- [Code](#code)
+- [How to run](#how_to_run)
+- [Images](#images)
+
 ## Code
 
 ### Main
@@ -55,11 +59,6 @@ class NeuralNetwork {
 private:
 	vector<NNLayer*> layers;
 	CCELoss cce_cost;
-
-	Tensor Y;
-	Tensor dY;
-	float learning_rate;
-
 public:
 	NeuralNetwork(float learning_rate = 0.01);
 	~NeuralNetwork();
@@ -70,9 +69,6 @@ public:
 	void addLayer(NNLayer *);
 	std::vector<NNLayer*> getLayers() const;
 
-	bool save(string);
-	bool load(string);
-
 	void summary();
 };
 ```
@@ -82,20 +78,12 @@ public:
 ```c++
 class SnakeDataset{
 private:
-    size_t batch_size;
-    int num_batches;
-    int size;
-    float **inputs;
-    float **labels;
-
     std::vector<Tensor> batches;
     std::vector<Tensor> targets;
 
 public:
     SnakeDataset(int, size_t, string, string);
 
-    int getNumOfBatches();
-    int getSize();
     std::vector<Tensor> &getBatches();
     std::vector<Tensor> &getTargets();
 };
@@ -106,11 +94,11 @@ public:
 ```bash
 $ cd folder name
 $ make
-$ ./main.out epochs # 71
+$ ./main.out epochs # 101
 ```
 
 ## Images
-*   **100 Epochs - Loss Evolution** :
+*   **Loss Evolution - 100 Epochs** :
 <p align="center"> 
-<img src="https://github.com/maldonadoq/games/blob/master/nn/img/loss.png" width="500">
+<img src="https://github.com/maldonadoq/games/blob/master/nn/img/loss.png" width="600">
 </p>
