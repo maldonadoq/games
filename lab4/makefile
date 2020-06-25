@@ -1,4 +1,5 @@
 NVCC = nvcc
+CC = g++
 LIBS = -std=c++11 -lGL -lGLU -lglut
 
 all: init
@@ -10,9 +11,12 @@ init:
 	$(NVCC) -c src/result.cu src/snake.cpp src/utils.cpp
 	$(NVCC) main.cu *.o -o main.out $(LIBS)
 
-update:
+upd:
 	$(NVCC) -c src/snake.cpp src/utils.cpp
 	$(NVCC) main.cu *.o -o main.out $(LIBS)
+
+gen:
+	$(CC) training.cpp -o training.out
 
 clean:
 	rm *.o *.out
