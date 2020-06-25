@@ -73,7 +73,7 @@ $ ./main.out epochs # 71
 ```
 
 ## Images
-*   **Loss Evolution - 100 Epochs** :
+*   **Loss Evolution - 71 Epochs** :
 <p align="center"> 
 <img src="https://github.com/maldonadoq/games/blob/master/nn/img/loss.png" width="600">
 </p>
