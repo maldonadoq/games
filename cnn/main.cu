@@ -1,7 +1,7 @@
 #include "neurals/dataset.cuh"
 #include "neurals/mnist.cuh"
 
-#define batch_size 256
+#define batch_size 512
 
 int main(int argc, char *argv[]){
 	int epochs = 3;

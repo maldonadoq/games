@@ -56,7 +56,7 @@ void Mnist::train(int epochs, int batch_size) {
 			backward();
 			rmsprop->step();
 
-			if (idx % 100 == 0) {
+			if (idx % 10 == 0) {
 				float loss = this->nll_loss->get_output()->get_data()[0];
 				auto acc = get_accuracy(this->softmax->get_output()->get_data(),
 																 10, this->dataset->get_label()->get_data());
