@@ -1,6 +1,7 @@
 # Data
 *.csv
 *.o
+*-ubyte
 *.h5
 
 # Visual Code
