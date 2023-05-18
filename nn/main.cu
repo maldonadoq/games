@@ -37,6 +37,7 @@ void PlotXY(string title, string xlabel, string ylabel, const std::vector<float>
     plt.Flush();
 }
 
+// generate dataset https://github.com/TheAILearner/Snake-Game-with-Deep-learning
 int main(int argc, char *argv[]){
 	Tensor Y;
 
